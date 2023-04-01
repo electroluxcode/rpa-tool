@@ -1,0 +1,40 @@
+卷 新加卷 的文件夹 PATH 列表
+卷序列号为 E2A8-A60C
+D:.
+│  list.txt
+│  README.md
+│  
+├─pcRPA
+│      pcData.json
+│      pcDataExample.json
+│      pcRPA.py
+│      README.md
+│      requirements.txt
+│      test.py
+│      
+└─phoneRPA
+    │  button.jpg
+    │  output.png
+    │  phoneData.json
+    │  phoneDataExample.json
+    │  phoneRPA.py
+    │  phoneRPAFn.py
+    │  README.md
+    │  requirements.txt
+    │  screen.png
+    │  test.py
+    │  ui.xml
+    │  
+    ├─adb
+    │      adb.zip
+    │      adb说明.md
+    │      element.sh
+    │      index.sh
+    │      index.txt
+    │      ls.txt
+    │      test.txt
+    │      
+    └─__pycache__
+            phoneRPA.cpython-37.pyc
+            phoneRPAFn.cpython-37.pyc
+            

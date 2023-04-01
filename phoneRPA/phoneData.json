@@ -1,0 +1,19 @@
+{
+    "name": "Electrolux_phone_autoRPA",
+    "description":{
+        "cmdType":["点击图片","输入","等待","滑动","点击坐标","点击元素","返回"],
+        "cmdParam":["图片名字","输入坐标","等待时长"]
+    },
+    "data": [
+        {
+            "cmdType": "点击元素",
+            "cmdParam":{
+                "key":"text",
+                "value":"朋友圈"
+            },
+            "cmdCound":"点击"
+        }
+       
+       
+    ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "electroluxrpa",
+  "version": "1.0.0",
+  "description": "用python | adb | opencv | pyautogui实现手机和电脑的自动化。具体的请看各个文件夹的README",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
