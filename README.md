@@ -58,7 +58,7 @@ tree /f > list.txt 生成
 
 pc端示例
 
-<img src = "./img/pc.gif">
+<img src = "./img/data.png">
 
 
 
