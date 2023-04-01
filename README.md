@@ -50,9 +50,23 @@ tree /f > list.txt 生成
 
 
 
+## 示例
+
+手机识图示例
+
+<img src = "./img/mobile.gif">
+
+pc端示例
+
+<img src = "./img/pc.gif">
 
 
 
+
+
+
+
+## 版本更新信息
 
 ver0.0.1 : 初次提交
 

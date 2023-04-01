@@ -70,7 +70,7 @@ def imgClick(img, retry):
 
             os.system(cmd)
             cv2.rectangle(
-                bigImg, (x[0], y[0]), (x[0] + smallWidth, y[0] + smallHeight), (0, 255, 255), 2)
+                bigImg, (x[0], y[0]), (x[0] + smallWidth, y[0] + smallHeight), (0, 255, 255), 5)
             cv2.imwrite("output.png", bigImg)
             retry = retry - 1
             

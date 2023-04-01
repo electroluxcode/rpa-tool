@@ -4,22 +4,46 @@
         "cmdType":["点击图片","右键","输入","等待","滚轮","网页刷新","网页tab栏切换","点击坐标","移动鼠标"],
         "cmdParam":["图片名字(png格式)","输入内容","等待时长"]
     },
-    "data": [
-       
+    "data": [ 
         {
-            "cmdType": "移动鼠标",
+            "cmdType": "点击坐标",
             "cmdParam":{
-                "x":213,
-                "y":410
+                "x":1881,
+                "y":583
             },
-            "cmdCound":1
+            "cmdCound":2
         },
         {
-            "cmdType": "拖动鼠标",
+            "cmdType": "滚轮",
+            "cmdParam":-400,
+            "cmdCound":2
+        },
+        {
+            "cmdType": "等待",
+            "cmdParam":2,
+            "cmd这是ai自动输入的Cound":2
+        },
+        {
+            "cmdType": "滚轮",
+            "cmdParam":-900,
+            "cmdCound":2
+        },
+        {
+            "cmdType": "等待",
+            "cmdParam":2,
+            "cmdCound":2
+        },
+        {
+            "cmdType": "点击坐标",
             "cmdParam":{
-                "x":1246,
-                "y":400
+                "x":1881,
+                "y":583
             },
+            "cmdCound":2
+        },
+        {
+            "cmdType": "输入",
+            "cmdParam":"这是ai自动输入的",
             "cmdCound":1
         }
        

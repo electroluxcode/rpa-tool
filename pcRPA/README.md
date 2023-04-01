@@ -13,6 +13,8 @@ pip install -r requirements.txt
 pip install pyperclip xlrd pillow pyautogui==0.9.50 
 pip install opencv-python -i https://pypi.tuna.tsinghua.edu.cn/simple 
 
+python pcRPA.py   
+
 
 --3.然后我们看到pcData.json中
 

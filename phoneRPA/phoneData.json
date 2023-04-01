@@ -5,15 +5,12 @@
         "cmdParam":["图片名字","输入坐标","等待时长"]
     },
     "data": [
+       
+       
         {
-            "cmdType": "点击元素",
-            "cmdParam":{
-                "key":"text",
-                "value":"朋友圈"
-            },
-            "cmdCound":"点击"
+            "cmdType": "点击图片",
+            "cmdParam":"button.jpg",
+            "cmdCound":4
         }
-       
-       
     ]
 }
