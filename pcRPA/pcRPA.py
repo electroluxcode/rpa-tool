@@ -108,6 +108,6 @@ if __name__ == '__main__':
         mainWork(allData["data"])
     elif key=='2':
         while True:
-            mainWork(allData)
+            mainWork(allData["data"])
             time.sleep(0.1)
             print("等待0.1秒")    

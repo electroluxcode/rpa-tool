@@ -1,0 +1,75 @@
+{
+    "name": "Electrolux",
+    "description":{
+        "cmdType":["点击图片","右键","输入","等待","滚轮","网页刷新","网页tab栏切换","点击坐标"],
+        "cmdParam":["图片名字(png格式)","输入内容","等待时长"]
+    },
+    "data": [
+        {
+            "cmdType": "点击坐标",
+            "cmdParam":{
+                "x":460,
+                "y":450
+            },
+            "cmdCound":1,
+            "description":"点击进去"
+        },
+        {
+            "cmdType": "等待",
+            "cmdParam":2,
+            "cmdCound":1
+        },
+        {
+            "cmdType": "点击坐标",
+            "cmdParam":{
+                "x":530,
+                "y":2200
+            },
+            "cmdCound":1,
+            "description":"点击进开始沟通"
+        },
+        {
+            "cmdType": "等待",
+            "cmdParam":2,
+            "cmdCound":1
+        },
+        {
+            "cmdType": "返回",
+            "cmdParam":0,
+            "cmdCound":0
+        },
+        {
+            "cmdType": "等待",
+            "cmdParam":2,
+            "cmdCound":1
+        },
+        {
+            "cmdType": "返回",
+            "cmdParam":0,
+            "cmdCound":0
+        },
+        {
+            "cmdType": "等待",
+            "cmdParam":2,
+            "cmdCound":1
+        },
+        {
+            "cmdType": "滑动",
+            "cmdParam":{
+                "originX":960,
+                "originY":950,
+                "targetX":960,
+                "targetY":600
+            },
+            "cmdCound":1,
+            "description":"滑动"
+        },
+        {
+            "cmdType": "等待",
+            "cmdParam":1,
+            "cmdCound":1
+        }
+        
+
+    ]
+}
