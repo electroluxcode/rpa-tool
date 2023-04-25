@@ -1,22 +1,8 @@
-
-
-
-
-用python | adb | opencv | pyautogui实现手机和电脑的自动化。具体的请看各个文件夹的README
-
-
-
-
-
-
-
 # electroluxRPA
 
 [![gitee](https://img.shields.io/static/v1?label=Gitee&message=Electrolux&color=blue)](https://gitee.com/Electrolux)[![bili](https://img.shields.io/static/v1?label=Bili&message=Electrolux&color=yellow)](https://space.bilibili.com/286773126)[![Contribute](https://img.shields.io/static/v1?label=Contribute&message=welcome&color=red)](https://gitee.com/Electrolux)[![Size](https://img.shields.io/static/v1?label=Size&message=4MB&color=green)](https://gitee.com/Electrolux)
 
-
-
-<img src="https://cdn.jsdelivr.net/npm/frontengineerplugin/img/main.png"/>
+用python | adb | opencv | pyautogui实现手机和电脑的自动化。具体的请看各个文件夹的README
 
 
 
@@ -93,11 +79,10 @@ tree /f > list.txt 生成
 ## Developer
 
 ```js
-如果你想添加你自己工程化的东西
---1.首先将你的文件放进file 文件夹
---2.修改project.js和util/handleEvent.js里面的文件，将你的方法添加进去
---3.接下来的测试阶段请输入npm link 
-然后 npm run engineer 
+如果你想添加你自己的东西
+--1.在pcRPA.py 和 phoneRPA.py 中 的 mainWork中 添加事件
+--2.为了程序的可读性，可以在pcDataExample.json和 phoneDataExample.json中添加你的示例
+--3.只要在 pcData.json 和 phoneData.json 中 添加 你的参数 然后 python 你的文件.py就可以运行
 ```
 
 
@@ -130,10 +115,10 @@ pc端示例
 
 ## Badge
 
-[![Size](https://img.shields.io/static/v1?label=plugin&message=frontEngineerPlugin&color=green)](https://gitee.com/Electrolux)
+[![Size](https://img.shields.io/static/v1?label=plugin&message=electroluxRPA&color=green)](https://gitee.com/Electrolux)
 
 ```
-[![Size](https://img.shields.io/static/v1?label=plugin&message=frontEngineerPlugin&color=green)](https://gitee.com/Electrolux)
+[![Size](https://img.shields.io/static/v1?label=plugin&message=electroluxRPA&color=green)](https://gitee.com/Electrolux)
 ```
 
 
