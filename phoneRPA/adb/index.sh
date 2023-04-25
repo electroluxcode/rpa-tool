@@ -83,6 +83,10 @@ done
 
 
 
+
+
+
+
 # 1.数组声明 名称=(元素 元素 元素) =左右赋值的时候不用加空格
 # "" 变成 变量 , '' 全部不是变量都是字符串
 # ARRAY_NAME=("element_1st" "element_2nd" "element_3th")

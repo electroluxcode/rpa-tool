@@ -1,4 +1,4 @@
-# electroluxRPA
+
 
 
 
@@ -6,7 +6,39 @@
 
 
 
-## 文件架构
+
+
+
+
+# electroluxRPA
+
+[![gitee](https://img.shields.io/static/v1?label=Gitee&message=Electrolux&color=blue)](https://gitee.com/Electrolux)[![bili](https://img.shields.io/static/v1?label=Bili&message=Electrolux&color=yellow)](https://space.bilibili.com/286773126)[![Contribute](https://img.shields.io/static/v1?label=Contribute&message=welcome&color=red)](https://gitee.com/Electrolux)[![Size](https://img.shields.io/static/v1?label=Size&message=4MB&color=green)](https://gitee.com/Electrolux)
+
+
+
+<img src="https://cdn.jsdelivr.net/npm/frontengineerplugin/img/main.png"/>
+
+
+
+##  Quickstart
+
+begin
+
+```shell
+npm install frontengineerplugin -g
+# 第一种方法，推荐：
+npm run  engineer 
+# 第二种方法：不推荐 项目根目录的package.json中输入
+frontengineerplugin install prettier husky env eslint npm
+# 第三种方法：命令行下面 输入
+frontengineerplugin gui
+```
+
+
+
+
+
+## struct
 
 ```js
 tree /f > list.txt 生成
@@ -50,7 +82,29 @@ tree /f > list.txt 生成
 
 
 
-## 示例
+
+
+
+
+
+
+
+
+## Developer
+
+```js
+如果你想添加你自己工程化的东西
+--1.首先将你的文件放进file 文件夹
+--2.修改project.js和util/handleEvent.js里面的文件，将你的方法添加进去
+--3.接下来的测试阶段请输入npm link 
+然后 npm run engineer 
+```
+
+
+
+## Example
+
+
 
 手机识图示例
 
@@ -66,10 +120,28 @@ pc端示例
 
 
 
-## 版本更新信息
 
 
-ver0.0.2 : 添加自动投 profile 的脚本 ，修复永久循环的一些bug
 
-ver0.0.1 : 初次提交
 
+
+
+
+
+## Badge
+
+[![Size](https://img.shields.io/static/v1?label=plugin&message=frontEngineerPlugin&color=green)](https://gitee.com/Electrolux)
+
+```
+[![Size](https://img.shields.io/static/v1?label=plugin&message=frontEngineerPlugin&color=green)](https://gitee.com/Electrolux)
+```
+
+
+
+## Support
+
+frontEngineerPlugin is developed by me. Please use frontEngineerPlugin, star it on gitee or even become a [sponsor](https://gitee.com/Electrolux) to support us!
+
+
+
+## update
