@@ -1,8 +1,23 @@
-# electroluxRPA
+<div align="center"><h1>
+<br/>
+🤖
+<br />
+electroluxRPA
+<br /><br />
+</h1>
+<sup>
+<br />
+<br />
+<a href="none"><img src="https://img.shields.io/static/v1?label=version&message=v1.0.0&color=blue" alt="npm package" /></a><a href=https://space.bilibili.com/286773126><img src="https://img.shields.io/static/v1?label=Bili&message=Electrolux&color=pink" alt="temp" /></a>
+<a href="none">   <img src="https://img.shields.io/static/v1?label=Author&message=Electrolux&color=yellow" alt="demos" /></a>
+<a href="none">   <img src="https://img.shields.io/static/v1?label=Contribute&message=welcome&color=green" alt="demos" /></a>
+<br />
+</a>
+<br />
+Translations: <a href="">🇨🇳 汉语</a>
+</sup>
+</div>
 
-[![gitee](https://img.shields.io/static/v1?label=Gitee&message=Electrolux&color=blue)](https://gitee.com/Electrolux)[![bili](https://img.shields.io/static/v1?label=Bili&message=Electrolux&color=yellow)](https://space.bilibili.com/286773126)[![Contribute](https://img.shields.io/static/v1?label=Contribute&message=welcome&color=red)](https://gitee.com/Electrolux)[![Size](https://img.shields.io/static/v1?label=Size&message=4MB&color=green)](https://gitee.com/Electrolux)
-
-用python | adb | opencv | pyautogui实现手机和电脑的自动化。具体的请看各个文件夹的README
 
 
 

@@ -3,15 +3,28 @@
 	"version": "1.0.0",
 	"description": "用python | adb | opencv | pyautogui实现手机和电脑的自动化。具体的请看各个文件夹的README",
 	"main": "index.js",
+	"homepage": "none",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"prepare": "husky install "
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Electrolux",
+	"label": [
+		{
+			"frontName": "Bili",
+			"behindName": "Electrolux",
+			"src": "https://space.bilibili.com/286773126",
+			"color": "pink"
+		}
+	],
 	"license": "ISC",
 	"devDependencies": {
+		"chalk": "^4.1.2",
+		"commander": "^9.5.0",
 		"husky": "^8.0.3",
+		"inquirer": "^7.3.3",
+		"ora": "^4.1.1",
 		"prettier": "^2.8.8"
 	}
 }
