@@ -11,6 +11,14 @@
             "cmdType": "点击图片",
             "cmdParam":"button.jpg",
             "cmdCound":4
+        },
+        {
+            "cmdType": "点击元素",
+            "cmdParam":{
+                "key":"text",
+                "value":"发送"
+            },
+            "cmdCound":1
         }
     ]
 }
