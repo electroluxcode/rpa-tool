@@ -1,6 +1,6 @@
 <div align="center"><h1>
 <br/>
-🤖
+🔨 
 <br />
 electroluxRPA
 <br /><br />

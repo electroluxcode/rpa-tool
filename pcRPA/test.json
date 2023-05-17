@@ -1,0 +1,15 @@
+{
+    "name": "Electrolux",
+    "description":{
+        "cmdType":["点击图片","右键","输入","等待","滚轮","网页刷新","网页tab栏切换","点击坐标","移动鼠标"],
+        "cmdParam":["图片名字(png格式)","输入内容","等待时长"]
+    },
+    "data": [ 
+       
+        {
+            "cmdType": "点击图片",
+            "cmdParam":"smile.png",
+            "cmdCound":1
+        }       
+    ]
+}
