@@ -2,7 +2,7 @@
 <br/>
 🔨 
 <br />
-electroluxRPA
+ElectroluxRPA
 <br /><br />
 </h1>
 <sup>
