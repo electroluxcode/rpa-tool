@@ -26,13 +26,12 @@ Translations: <a href="">🇨🇳 汉语</a>
 begin
 
 ```shell
-npm install frontengineerplugin -g
-# 第一种方法，推荐：
-npm run  engineer 
-# 第二种方法：不推荐 项目根目录的package.json中输入
-frontengineerplugin install prettier husky env eslint npm
-# 第三种方法：命令行下面 输入
-frontengineerplugin gui
+# 然后安装好python 和 adb 的 环境 
+git clone https://gitee.com/Electrolux/electrolux-rpa.git
+
+# 如果你是 想 运行 电脑脚本 可以看到 pcRPA 这个文件夹 。如果你是想运行 手机脚本 可以看到 phoneRPA这个文件夹，具体的可以看
+# https://www.bilibili.com/video/BV1Nm4y1876a
+
 ```
 
 
