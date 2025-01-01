@@ -1,8 +1,0 @@
-adb.sh
-adb.zip
-adb_util.zip
-adb说明.md
-index.sh
-index.txt
-ls.txt
-ui123.xml

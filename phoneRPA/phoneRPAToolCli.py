@@ -3,6 +3,7 @@ import time
 import json
 import cv2
 import os
+import sys
 import numpy as np
 import xml.etree.ElementTree as ET
 import re
@@ -36,23 +37,24 @@ def imgClick(img, retry):
     while ( retry!=0 & True):
         # 图片保存在里面
         os.system("adb shell screencap -p /sdcard/screen.png ")
-        os.system("adb pull /sdcard/screen.png ")
-
+        os.system("adb pull /sdcard/screen.png")
         # 1.加载大图
-        bigImg = cv2.imread('screen.png')
+        screenImg = cv2.imread('screen.png')
+        
+        # 2.加载目标图像
         # smallImg = cv2.imread('pos.jpg',0) 1259 969
         smallImg = cv2.imread(img, 0)
         # 2.存储大小图的宽高 | 大图转化灰度图像
-        # bigWidth, bigHeight = bigImg.shape[0:2]
+        # bigWidth, bigHeight = screenImg.shape[0:2]
         smallWidth, smallHeight = smallImg.shape[0:2]
-        img_gray = cv2.cvtColor(bigImg, cv2.COLOR_BGR2GRAY)
+        img_gray = cv2.cvtColor(screenImg, cv2.COLOR_BGR2GRAY)
 
         # 2.5查看灰度图像
-        # cv2.namedWindow("img_rgb",0)
-        # cv2.resizeWindow('img_rgb',300,600)
-        # cv2.resize(bigImg,None,fx=0.5,fy=0.5)
-        # cv2.imshow('img_rgb', img_gray)
-        # cv2.waitKey(0)
+        cv2.namedWindow("img_rgb",0)
+        cv2.resizeWindow('img_rgb',300,600)
+        cv2.resize(screenImg,None,fx=0.5,fy=0.5)
+        cv2.imshow('img_rgb', img_gray)
+        cv2.waitKey(1)
 
         # 3.开始查找
         res = cv2.matchTemplate(img_gray, smallImg, cv2.TM_CCOEFF_NORMED)
@@ -70,13 +72,12 @@ def imgClick(img, retry):
 
             os.system(cmd)
             cv2.rectangle(
-                bigImg, (x[0], y[0]), (x[0] + smallWidth, y[0] + smallHeight), (0, 255, 255), 5)
-            cv2.imwrite("output.png", bigImg)
+                screenImg, (x[0], y[0]), (x[0] + smallWidth, y[0] + smallHeight), (0, 255, 255), 5)
             retry = retry - 1
-            
+            cv2.destroyAllWindows()
 
         else:
-            time.sleep(0.2)
+            time.sleep(1)
             print('找不到图像呢,等0.2秒后重试')
 
 def mainWork(allData):
@@ -86,18 +87,18 @@ def mainWork(allData):
         cmdParam = allData[i]["cmdParam"]
         cmdCound = allData[i]["cmdCound"]
 
-        # 1.点击鼠标
+        # 1.点击坐标
         if cmdType == "ClickPosition":
             cmd = "adb shell input tap %s %s" % ( str(cmdParam["x"]), str(cmdParam["y"]))
             os.system(cmd)
             print("点击", cmdParam, cmdCound, "次")
 
-        # 2.滑动
-        if cmdType == "滑动":
+        # 2.Swipe
+        if cmdType == "Swipe":
             cmd = "adb shell input swipe %s %s %s %s" % (str(cmdParam["originX"]), str(
                 cmdParam["originY"]), str(cmdParam["targetX"]), str(cmdParam["targetY"]))
             os.system(cmd)
-            print("滑动", cmdParam)
+            print("Swipe", cmdParam)
 
         # 3.Wait
         if cmdType == "Wait":
@@ -109,11 +110,11 @@ def mainWork(allData):
             imgClick(cmdParam, cmdCound)
             print("点击了", cmdParam,cmdCound,"次")
 
-        if cmdType == "返回":
+        if cmdType == "Back":
             os.system("adb shell input keyevent BACK")
-            print("返回")
+            print("Back")
             
-        if cmdType == "点击元素":
+        if cmdType == "ClickElement":
             elementFind(cmdParam["key"], cmdParam["value"])
             print("点击了", cmdParam)
         i += 1
@@ -122,18 +123,26 @@ def mainWork(allData):
 # from phoneRPAFn import mainWork
 
 if __name__ == '__main__':
-    # print(mainWork)
-    print('Electrolux_Phone_RPA欢迎使用')
-    # 数据检查
-    # checkCmd = dataCheck(allData)
-    f = open('phoneData.json', encoding='UTF-8')
-    allData = json.load(f)
-    key = input('选择功能: 1.做一次 2.循环到死 \n')
-    if key == '1':
-        # 循环拿出每一行指令
-        mainWork(allData["data"])
-    elif key == '2':
-        while True:
-            mainWork(allData["data"])
-            time.sleep(0.1)
-            print("Wait0.1秒")
+    
+    if len(sys.argv) > 1:
+        try:
+            # 获取传入的第一个参数（索引为1，因为索引0是脚本自身名称）并尝试解析为字典
+            
+            print(sys.argv)
+            param_dict = json.loads(sys.argv[1])
+            print(param_dict)
+            """
+step1: 定义传参
+const data =  '[{ "cmdType": "ClickPosition", "cmdParam":{ "x":146, "y":400 }, "cmdCound":1 }]'
+
+const normalJsonStr = JSON.stringify(data)
+const escapedJsonStr = (normalJsonStr).replaceAll("\"", "\\\"").replaceAll("\\\\", "\\")
+// 传参的值
+console.log(escapedJsonStr);
+step2 : python phoneRPAToolCli.py [{\"cmdType\":\"ClickPosition\",\"cmdParam\":{\"x\":146,\"y\":400},\"cmdCound\":1}]
+
+            """
+            mainWork(param_dict)
+        except json.JSONDecodeError as e:
+            print('传入的参数无法解析为合法的JSON格式，错误信息：', e)
+   

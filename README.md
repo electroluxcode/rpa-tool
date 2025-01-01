@@ -2,7 +2,7 @@
 <br/>
 🔨 
 <br />
-ElectroluxRPA
+rpa-tool
 <br /><br />
 </h1>
 <sup>
@@ -14,7 +14,7 @@ ElectroluxRPA
 <br />
 </a>
 <br />
-Translations: <a href="">🇨🇳 汉语</a>
+用于window和anroid系统上的rpa工具类实例，直接exe调用即可
 </sup>
 </div>
 
@@ -29,8 +29,6 @@ begin
 # 然后安装好python 和 adb 的 环境 
 git clone https://gitee.com/Electrolux/electrolux-rpa.git
 
-# 如果你是 想 运行 电脑脚本 可以看到 pcRPA 这个文件夹 。如果你是想运行 手机脚本 可以看到 phoneRPA这个文件夹，具体的可以看
-# https://www.bilibili.com/video/BV1Nm4y1876a
 
 ```
 
@@ -105,7 +103,7 @@ tree /f > list.txt 生成
 
 
 
-手机识图示例
+手机识图示例, 具体的参数可以参考 phoneRPA\phoneDataExample.json  这个json的文件，参数可能有一些变化
 
 <img src = "./img/mobile.gif">
 

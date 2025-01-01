@@ -2,10 +2,66 @@
 
 
 
-## 1.ADB
+## 说明
 
-```JS
-无线连接必须先有线连接
+参数说明和参数使用方法参考可以参照 `phoneDataExample.json` ，都是语义化的东西
+
+核心是两个文件
+
+- phoneRPA.py 用来执行json中的代码，默认读取 phoneData.json 中的代码 
+- RPAToolCli.py 用来执行命令行的代码，以供其他语言直接调用，以下是调用实例
+
+
+```js
+const { exec } = require('child_process');
+ 
+const data =  [
+  {
+            "cmdType": "Back",
+            "cmdParam":0,
+            "cmdCound":0
+        },
+        {
+            "cmdType": "ClickPosition",
+            "cmdParam":{
+                "x":460,
+                "y":450
+            },
+            "cmdCound":1
+        },
+ 
+]
+
+const normalJsonStr = JSON.stringify(data)
+const escapedJsonStr = (normalJsonStr).replaceAll("\"", "\\\"").replaceAll("\\\\", "\\")
+console.log("'" +escapedJsonStr+ "'");
+
+exec('phoneRPAToolCli.exe ' + escapedJsonStr, (error, stdout, stderr) => {
+  if (error) {
+    console.error(`执行的错误: ${error}`);
+    return;
+  }
+  console.log(`标准输出: ${stdout}`);
+  if (stderr) {
+    console.error(`标准错误输出: ${stderr}`);
+  }
+});
+
+
+```
+
+
+## 打包
+pip install pyinstaller  -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
+pyinstaller -F -w   phoneRPAToolCli.py
+
+
+
+
+## 开发
+
+### 1.1有线连接
+```js
 --1. 手机上开发者选项和USB调试 模拟点击打开
 --2. 这个文件夹下面的adb/adb.zip 解压后，添加这个环境到环境变量
 --3. 有线连上后
@@ -16,38 +72,18 @@
 --3.5 这时候就可以开始了
 ```
 
-## 2.Python
 
-```js
---1.去到这个网站然后下载，注意只为我安装就可以添加到环境变量
-https://repo.anaconda.com/archive/
---2.安装完后可以
-conda create -n autoPhone python=3.7
-conda activate autoPhone 
+### 1.2无线连接
 
-pip install -r requirements.txt
+android 10以上可以用，10以下没有
 
+- 1. 开发者选项打开无线连接
+- 2. 选择用 用配对码配对设备
 
-opencv的区域往色彩多的地方画
+<img src="./assets/qrcode.jpg">
 
+- 3. 电脑端使用  adb pair 192.168.31.93:41461 并且输入激活码配对
 
-python phoneRPA.py
-
---3.然后我们看到pcData.json中
-
-可以根据pcDataExample.json里面的示例来定义自己想要的东西
-
---4.关于开发者的小tips
-pip install pipreqs
-pipreqs ./ --encoding=utf8
-
-
---5.遇到一个大坑，关于模块无法导入的问题
-原因是虚拟环境 conda 需要 需要
-
---5.1打开命令面板 ( Ctrl++ )，然后选择ShiftPython : Select Interpreter。从列表中，选择项目文件夹中以 开头的虚拟环境。P.env
-
---5.2运行终端：创建新的集成终端（Ctrl++或从命令面板），这将创建一个终端并通过运行其激活脚本自动Shift激活虚拟环境。
 
 
 

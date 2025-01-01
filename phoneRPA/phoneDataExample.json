@@ -1,12 +1,12 @@
 {
     "name": "Electrolux",
     "description":{
-        "cmdType":["ClickImage","RightClick","Input","Wait","Wheel","SiteFresh","ClickPosition","返回"],
+        "cmdType":["ClickImage","RightClick","Input","Wait","Wheel","SiteFresh","ClickPosition","Back"],
         "cmdParam":["图片名字(png格式)","Input内容","Wait时长"]
     },
     "data": [
         {
-            "cmdType": "返回",
+            "cmdType": "Back",
             "cmdParam":0,
             "cmdCound":0
         },
@@ -19,7 +19,7 @@
             "cmdCound":1
         },
         {
-            "cmdType": "点击元素",
+            "cmdType": "ClickElement",
             "cmdParam":{
                 "key":"text",
                 "value":"朋友圈"
@@ -37,7 +37,7 @@
             "cmdCound":1
         },
         {
-            "cmdType": "滑动",
+            "cmdType": "Swipe",
             "cmdParam":{
                 "originX":960,
                 "originY":950,
@@ -47,7 +47,7 @@
             "cmdCound":1
         },
         {
-            "cmdType": "点击元素",
+            "cmdType": "ClickElement",
             "cmdParam":{
                 "key":"text",
                 "value":"朋友圈"
