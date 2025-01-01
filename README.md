@@ -27,8 +27,7 @@ begin
 
 ```shell
 # 然后安装好python 和 adb 的 环境 
-git clone https://gitee.com/Electrolux/electrolux-rpa.git
-
+git clone 
 
 ```
 
