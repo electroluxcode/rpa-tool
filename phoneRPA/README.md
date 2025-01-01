@@ -10,7 +10,7 @@
 
 - phoneRPA.py 用来执行json中的代码，默认读取 phoneData.json 中的代码 
 - RPAToolCli.py 用来执行命令行的代码，以供其他语言直接调用，以下是调用实例
-
+- RPAToolCli.exe 在released中，功能和RPAToolCli.py 相同，打包是为了方便使用
 
 ```js
 const { exec } = require('child_process');

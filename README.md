@@ -14,7 +14,7 @@ rpa-tool
 <br />
 </a>
 <br />
-用于window和anroid系统上的rpa工具类实例，直接exe调用即可
+用于window和anroid系统上的rpa工具类实例
 </sup>
 </div>
 

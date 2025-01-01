@@ -8,6 +8,7 @@
 
 - pcRPA.py 用来执行json中的代码，默认读取 pcData.json 中的代码 
 - pcRPAToolCli.py 用来执行命令行的代码，以供其他语言直接调用，以下是调用实例
+- pcRPAToolCli.exe 在released中，功能和pcRPAToolCli.py 相同，打包是为了方便使用
 
 
 ```js
