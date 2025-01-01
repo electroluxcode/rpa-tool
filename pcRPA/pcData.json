@@ -1,12 +1,12 @@
 {
     "name": "Electrolux",
     "description":{
-        "cmdType":["点击图片","右键","输入","等待","滚轮","网页刷新","网页tab栏切换","点击坐标","移动鼠标"],
-        "cmdParam":["图片名字(png格式)","输入内容","等待时长"]
+        "cmdType":["ClickImage","RightClick","Input","Wait","Wheel","SiteFresh","TabSwitch","ClickPosition","MouseMove"],
+        "cmdParam":["图片名字(png格式)","Input内容","Wait时长"]
     },
     "data": [ 
         {
-            "cmdType": "点击坐标",
+            "cmdType": "ClickPosition",
             "cmdParam":{
                 "x":1881,
                 "y":583
@@ -14,27 +14,26 @@
             "cmdCound":2
         },
         {
-            "cmdType": "滚轮",
+            "cmdType": "Wheel",
             "cmdParam":-400,
             "cmdCound":2
         },
         {
-            "cmdType": "等待",
-            "cmdParam":2,
-            "cmd这是ai自动输入的Cound":2
+            "cmdType": "Wait",
+            "cmdParam":2
         },
         {
-            "cmdType": "滚轮",
+            "cmdType": "Wheel",
             "cmdParam":-900,
             "cmdCound":2
         },
         {
-            "cmdType": "等待",
+            "cmdType": "Wait",
             "cmdParam":2,
             "cmdCound":2
         },
         {
-            "cmdType": "点击坐标",
+            "cmdType": "ClickPosition",
             "cmdParam":{
                 "x":1881,
                 "y":583
@@ -42,8 +41,8 @@
             "cmdCound":2
         },
         {
-            "cmdType": "输入",
-            "cmdParam":"这是ai自动输入的",
+            "cmdType": "Input",
+            "cmdParam":"这是ai自动Input的",
             "cmdCound":1
         }
        

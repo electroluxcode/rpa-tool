@@ -2,33 +2,47 @@ import pyautogui
 import time
 import pyperclip
 import json
+import sys
 #定义鼠标事件
 #pyautogui库其他用法 https://blog.csdn.net/qingfengxd1/article/details/108270159
 
 def mouseClick(clickTimes,lOrR,img,reTry):
+    print("正在寻找图片：")
+    print(img)
     if reTry == 1:
         while True:
-            location=pyautogui.locateCenterOnScreen(img,confidence=0.9)
-            if location is not None:
-                pyautogui.click(location.x,location.y,clicks=clickTimes,interval=0.2,duration=0.2,button=lOrR)
-                break
-            print("未找到匹配图片,0.1秒后重试")
-            time.sleep(0.1)
+            try:
+                location=pyautogui.locateCenterOnScreen(img,confidence=0.7)
+                if location is not None:
+                    pyautogui.click(location.x,location.y,clicks=clickTimes,interval=0.2,duration=0.2,button=lOrR)
+                    break
+                print("未找到匹配图片,0.5秒后重试")
+                time.sleep(0.5)
+            except:
+                print("未找到匹配图片,0.5秒后重试")
+                pass
     elif reTry > 1:
         i = 1
         while i < reTry + 1:
-            location=pyautogui.locateCenterOnScreen(img,confidence=0.9)
-            if location is not None:
-                pyautogui.click(location.x,location.y,clicks=clickTimes,interval=0.2,duration=0.2,button=lOrR)
+            try:
+                location=pyautogui.locateCenterOnScreen(img,confidence=0.9)
+                if location is not None:
+                    pyautogui.click(location.x,location.y,clicks=clickTimes,interval=0.2,duration=0.2,button=lOrR)
+                    print("重复")
+                    i += 1
+                time.sleep(0.1)
+            except:
                 print("重复")
-                i += 1
-            time.sleep(0.1)
+                pass
     elif reTry == 0:
         if True:
-            location=pyautogui.locateCenterOnScreen(img,confidence=0.7)
-            if location :
-                print("遇到指定图片停止30分钟")
-                time.sleep(1*60*30)
+            try:
+                location=pyautogui.locateCenterOnScreen(img,confidence=0.7)
+                if location :
+                    print("遇到指定图片停止30分钟")
+                    time.sleep(1*60*30)
+            except:
+                pass
 
 
 #主任务
@@ -97,17 +111,25 @@ def mainWork(allData):
 
 if __name__ == '__main__':
     
-    print('Electrolux_PC_RPA欢迎使用')
-    #数据检查
-    # checkCmd = dataCheck(allData)
-    f = open('test.json', encoding='UTF-8') 
-    allData = json.load(f)
-    key=input('选择功能: 1.做一次 2.循环到死 \n')
-    if key=='1':
-        #循环拿出每一行指令
-        mainWork(allData["data"])
-    elif key=='2':
-        while True:
-            mainWork(allData["data"])
-            time.sleep(0.1)
-            print("Wait0.1秒")    
+    if len(sys.argv) > 1:
+        try:
+            # 获取传入的第一个参数（索引为1，因为索引0是脚本自身名称）并尝试解析为字典
+            
+            print(sys.argv)
+            param_dict = json.loads(sys.argv[1])
+            print(param_dict)
+            """
+step1: 定义传参
+const data =  '[{ "cmdType": "ClickPosition", "cmdParam":{ "x":146, "y":400 }, "cmdCound":1 }]'
+
+const normalJsonStr = JSON.stringify(data)
+const escapedJsonStr = (normalJsonStr).replaceAll("\"", "\\\"").replaceAll("\\\\", "\\")
+// 传参的值
+console.log(escapedJsonStr);
+step2 : python pcRPAToolCli.py [{\"cmdType\":\"ClickPosition\",\"cmdParam\":{\"x\":146,\"y\":400},\"cmdCound\":1}]
+
+            """
+            mainWork(param_dict)
+        except json.JSONDecodeError as e:
+            print('传入的参数无法解析为合法的JSON格式，错误信息：', e)
+   

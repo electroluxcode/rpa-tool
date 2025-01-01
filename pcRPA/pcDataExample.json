@@ -1,33 +1,34 @@
 {
     "name": "Electrolux",
     "description":{
-        "cmdType":["点击图片","右键","输入","等待","滚轮","网页刷新","网页tab栏切换","点击坐标"],
+        "cmdType":["ClickImage","RightClick","Input","Wait","Wheel","SiteFresh","TabSwitch","ClickPosition", "MouseMove", "MouseDrag" ],
+        "Cn":  ["点击图片","右键","输入","等待","滚轮","网页刷新","网页tab栏切换","点击坐标", "鼠标移动", "鼠标拖拽"],
         "cmdParam":["图片名字(png格式)","输入内容","等待时长"]
     },
     "data": [
         {
-            "cmdType": "点击图片",
+            "cmdType": "ClickImage",
             "cmdParam":"red1.png",
             "cmdCound":1
         },
         {
-            "cmdType": "等待",
+            "cmdType": "Wait",
             "cmdParam":2,
             "cmdCound":null
         },{
-            "cmdType": "点击坐标",
+            "cmdType": "ClickPosition",
             "cmdParam":{
                 "x":146,
                 "y":400
             },
             "cmdCound":1
         },{
-            "cmdType": "滚轮",
+            "cmdType": "Wheel",
             "cmdParam":200,
             "cmdCound":null
         },
          {
-            "cmdType": "移动鼠标",
+            "cmdType": "MouseMove",
             "cmdParam":{
                 "x":213,
                 "y":410
@@ -35,7 +36,7 @@
             "cmdCound":1
         },
         {
-            "cmdType": "拖动鼠标",
+            "cmdType": "MouseDrag",
             "cmdParam":{
                 "x":1246,
                 "y":400
