@@ -1,8 +1,8 @@
 {
     "name": "Electrolux",
     "description":{
-        "cmdType":["点击图片","右键","输入","等待","滚轮","网页刷新","点击坐标","返回"],
-        "cmdParam":["图片名字(png格式)","输入内容","等待时长"]
+        "cmdType":["ClickImage","RightClick","Input","Wait","Wheel","SiteFresh","ClickPosition","返回"],
+        "cmdParam":["图片名字(png格式)","Input内容","Wait时长"]
     },
     "data": [
         {
@@ -11,7 +11,7 @@
             "cmdCound":0
         },
         {
-            "cmdType": "点击坐标",
+            "cmdType": "ClickPosition",
             "cmdParam":{
                 "x":460,
                 "y":450
@@ -27,12 +27,12 @@
             "cmdCound":1
         },
         {
-            "cmdType": "点击图片",
+            "cmdType": "ClickImage",
             "cmdParam":"button.jpg",
             "cmdCound":4
         },
         {
-            "cmdType": "等待",
+            "cmdType": "Wait",
             "cmdParam":3,
             "cmdCound":1
         },

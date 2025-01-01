@@ -1,14 +1,14 @@
 {
     "name": "Electrolux_phone_autoRPA",
     "description":{
-        "cmdType":["点击图片","输入","等待","滑动","点击坐标","点击元素","返回"],
-        "cmdParam":["图片名字","输入坐标","等待时长"]
+        "cmdType":["ClickImage","Input","Wait","滑动","ClickPosition","点击元素","返回"],
+        "cmdParam":["图片名字","Input坐标","Wait时长"]
     },
     "data": [
        
        
         {
-            "cmdType": "点击图片",
+            "cmdType": "ClickImage",
             "cmdParam":"button.jpg",
             "cmdCound":4
         },

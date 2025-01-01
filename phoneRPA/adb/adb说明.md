@@ -15,7 +15,7 @@
 
 我的shell 脚本如下
 
-echo "请输入你想沟通的人数"
+echo "请Input你想沟通的人数"
 read n
 count=1
 while ((count<=n))

@@ -87,7 +87,7 @@ def mainWork(allData):
         cmdCound = allData[i]["cmdCound"]
 
         # 1.点击鼠标
-        if cmdType == "点击坐标":
+        if cmdType == "ClickPosition":
             cmd = "adb shell input tap %s %s" % ( str(cmdParam["x"]), str(cmdParam["y"]))
             os.system(cmd)
             print("点击", cmdParam, cmdCound, "次")
@@ -99,13 +99,13 @@ def mainWork(allData):
             os.system(cmd)
             print("滑动", cmdParam)
 
-        # 3.等待
-        if cmdType == "等待":
+        # 3.Wait
+        if cmdType == "Wait":
             time.sleep(cmdParam)
-            print("等待", cmdParam, "秒")
+            print("Wait", cmdParam, "秒")
 
-        # 4.点击图片
-        if cmdType == "点击图片":
+        # 4.ClickImage
+        if cmdType == "ClickImage":
             imgClick(cmdParam, cmdCound)
             print("点击了", cmdParam,cmdCound,"次")
 
@@ -136,4 +136,4 @@ if __name__ == '__main__':
         while True:
             mainWork(allData["data"])
             time.sleep(0.1)
-            print("等待0.1秒")
+            print("Wait0.1秒")

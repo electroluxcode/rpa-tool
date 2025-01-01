@@ -9,7 +9,7 @@
 # adb connect 172.18.89.179:6666
 
 
-echo "请输入你想沟通的人数"
+echo "请Input你想沟通的人数"
 read n
 count=1
 while ((count<=n))
@@ -48,7 +48,7 @@ done
 # adb devices    // 172.18.89.179:6666      device
 # adb -s 172.18.89.179:6666 shell input keyevent BACK
 
-# 输入
+# Input
 # adb shell input text test123456
 
 # 常按

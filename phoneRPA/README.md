@@ -49,11 +49,7 @@ pipreqs ./ --encoding=utf8
 
 --5.2运行终端：创建新的集成终端（Ctrl++或从命令面板），这将创建一个终端并通过运行其激活脚本自动Shift激活虚拟环境。
 
---5.3 Python: Clear Cache and Reload Window
 
-鉴于不同环境可能无法导入的问题，所以我干脆模块都写进一个文件去。第五点不用看了
-
-```
 
 
 
