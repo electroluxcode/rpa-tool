@@ -23,14 +23,13 @@ rpa-tool
 
 ## Description
 
+支持识图点击，滑动，输入，按键操作等常规操作
 
-
-这个仓库主要用作rpa的基类，支持两个平台
+一个rpa常用方法的集成库 ，目前支持两个平台
 
 - window
 - android
 
-支持识图点击，滑动，输入，按键操作等常规操作
 
 然后 有两种调用方式，
 
@@ -48,12 +47,6 @@ rpa-tool
 ##  Quickstart
 
 clone 仓库或者 从 https://github.com/electroluxcode/rpa-tool/releases 下载 exe文件(注意如果要运行手机端rpa需要在远端控制设备上安装adb)
-
-
-
-
-
-
 
 
 ## Example
