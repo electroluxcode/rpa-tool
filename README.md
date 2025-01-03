@@ -21,21 +21,75 @@ rpa-tool
 
 
 
+## Description
+
+
+
+这个仓库主要用作rpa的基类，支持两个平台
+
+- window
+- android
+
+支持识图点击，滑动，输入，按键操作等常规操作
+
+然后 有两种调用方式，
+
+- 通过python直接调用
+- 通过exe加上命令参数调用
+
+具体可以参考
+
+[PC端文档](./pcRPA/README.md)
+
+[移动端文档](./phoneRPA/README.md)
+
+
+
 ##  Quickstart
 
-begin
-
-```shell
-# 然后安装好python 和 adb 的 环境 
-git clone 
-
-```
+clone 仓库或者 从 https://github.com/electroluxcode/rpa-tool/releases 下载 exe文件(注意如果要运行手机端rpa需要在远端控制设备上安装adb)
 
 
 
 
 
-## struct
+## exe example
+
+
+
+
+
+### Window
+
+
+
+
+
+
+
+### Android
+
+
+
+
+
+## Example
+
+
+
+手机识图示例, 具体的参数可以参考 phoneRPA\phoneDataExample.json  这个json的文件，参数可能有一些变化
+
+<img src = "./img/mobile.gif">
+
+
+pc端识图参数可以参考 pcRPA\pcDataExample.json  这个json的文件，参数可能有一些变化
+
+
+
+
+
+
+## Struct
 
 ```js
 tree /f > list.txt 生成
@@ -95,28 +149,6 @@ tree /f > list.txt 生成
 --2.为了程序的可读性，可以在pcDataExample.json和 phoneDataExample.json中添加你的示例
 --3.只要在 pcData.json 和 phoneData.json 中 添加 你的参数 然后 python 你的文件.py就可以运行
 ```
-
-
-
-## Example
-
-
-
-手机识图示例, 具体的参数可以参考 phoneRPA\phoneDataExample.json  这个json的文件，参数可能有一些变化
-
-<img src = "./img/mobile.gif">
-
-pc端示例
-
-<img src = "./img/data.png">
-
-
-
-
-
-
-
-
 
 
 

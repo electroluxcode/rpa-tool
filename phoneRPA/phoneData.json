@@ -1,24 +1,11 @@
 {
     "name": "Electrolux_phone_autoRPA",
     "description":{
-        "cmdType":["ClickImage","Input","Wait","Swipe","ClickPosition","ClickElement","Back"],
+        "cmdType":["ImgClick","Write","Sleep","Swipe","Click","ElementClick"],
         "cmdParam":["图片名字","Input坐标","Wait时长"]
     },
     "data": [
        
        
-        {
-            "cmdType": "ClickImage",
-            "cmdParam":"button.jpg",
-            "cmdCound":4
-        },
-        {
-            "cmdType": "ClickElement",
-            "cmdParam":{
-                "key":"text",
-                "value":"发送"
-            },
-            "cmdCound":1
-        }
     ]
 }

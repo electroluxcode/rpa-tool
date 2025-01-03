@@ -1,13 +1,12 @@
-
 import time
 import json
 import cv2
 import os
+import sys
 import numpy as np
 import xml.etree.ElementTree as ET
 import re
 # 定义鼠标事件
-# pyautogui库其他用法 https://blog.csdn.net/qingfengxd1/article/details/108270159
 
 
 def elementFind(attr,attrValue):
@@ -32,8 +31,8 @@ def elementFind(attr,attrValue):
             os.system(cmd)
             break
         
-def imgClick(img, retry): 
-    while ( retry!=0 & True):
+def imgClick(img): 
+    while ( True):
         # 图片保存在里面
         os.system("adb shell screencap -p /sdcard/screen.png ")
         os.system("adb pull /sdcard/screen.png")
@@ -72,9 +71,8 @@ def imgClick(img, retry):
             os.system(cmd)
             cv2.rectangle(
                 screenImg, (x[0], y[0]), (x[0] + smallWidth, y[0] + smallHeight), (0, 255, 255), 5)
-            retry = retry - 1
             cv2.destroyAllWindows()
-
+            break
         else:
             time.sleep(1)
             print('找不到图像呢,等0.2秒后重试')
@@ -84,13 +82,12 @@ def mainWork(allData):
     while i < len(allData):
         cmdType = allData[i]["cmdType"]
         cmdParam = allData[i]["cmdParam"]
-        cmdCound = allData[i]["cmdCound"]
 
         # 1.点击坐标
-        if cmdType == "ClickPosition":
+        if cmdType == "Click":
             cmd = "adb shell input tap %s %s" % ( str(cmdParam["x"]), str(cmdParam["y"]))
             os.system(cmd)
-            print("点击", cmdParam, cmdCound, "次")
+            print("Click", cmdParam)
 
         # 2.Swipe
         if cmdType == "Swipe":
@@ -99,23 +96,35 @@ def mainWork(allData):
             os.system(cmd)
             print("Swipe", cmdParam)
 
-        # 3.Wait
-        if cmdType == "Wait":
+        # 3.Sleep
+        if cmdType == "Sleep":
             time.sleep(cmdParam)
-            print("Wait", cmdParam, "秒")
+            print("Sleep", cmdParam, "秒")
 
-        # 4.ClickImage
-        if cmdType == "ClickImage":
-            imgClick(cmdParam, cmdCound)
-            print("点击了", cmdParam,cmdCound,"次")
+        # 4.ImgClick
+        if cmdType == "ImgClick":
+            imgClick(cmdParam)
+            print("ElementClick", cmdParam)
 
-        if cmdType == "Back":
-            os.system("adb shell input keyevent BACK")
-            print("Back")
+
+        if cmdType == "KeyEventInput":
+            os.system("adb shell input keyevent " + str(cmdParam))
+            print("KeyEventInput")
+
+        if cmdType == "TextInput":
+            os.system("adb shell input text " + str(cmdParam))
+            print("TextInput")
             
-        if cmdType == "ClickElement":
+        if cmdType == "ElementClick":
             elementFind(cmdParam["key"], cmdParam["value"])
-            print("点击了", cmdParam)
+            print("ElementClick", cmdParam)
+        if cmdType == "ImgCature":
+            os.system("adb shell screencap -p /sdcard/"+ str(cmdParam))
+            os.system("adb pull /sdcard/"+ str(cmdParam))
+            print("ImgCature", cmdParam)
+        if cmdType == "AppStart":
+            os.system("adb shell am start -n " + str(cmdParam))
+            print("AppStart", cmdParam)
         i += 1
 
 

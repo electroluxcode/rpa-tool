@@ -1,58 +1,80 @@
 {
     "name": "Electrolux",
-    "description":{
-        "cmdType":["ClickImage","RightClick","Input","Wait","Wheel","SiteFresh","ClickPosition","Back"],
-        "cmdParam":["图片名字(png格式)","Input内容","Wait时长"]
+    "description": {
+        "cmdType": [
+            "ImgClick",
+            "ImgRightClick",
+            "Write",
+            "Sleep",
+            "Scroll",
+            "SiteFresh",
+            "Click",
+            "Back"
+        ],
+        "cmdParam": [
+            "图片名字(png格式)",
+            "Input内容",
+            "Wait时长"
+        ]
     },
     "data": [
         {
-            "cmdType": "Back",
-            "cmdParam":0,
-            "cmdCound":0
-        },
-        {
-            "cmdType": "ClickPosition",
-            "cmdParam":{
-                "x":460,
-                "y":450
+            "cmdType": "Click",
+            "cmdParam": {
+                "x": 460,
+                "y": 450
             },
-            "cmdCound":1
+            "cmdCound": 1
         },
         {
-            "cmdType": "ClickElement",
-            "cmdParam":{
-                "key":"text",
-                "value":"朋友圈"
+            "cmdType": "ElementClick",
+            "cmdParam": {
+                "key": "text",
+                "value": "朋友圈"
             },
-            "cmdCound":1
+            "cmdCound": 1
         },
         {
-            "cmdType": "ClickImage",
-            "cmdParam":"button.jpg",
-            "cmdCound":4
+            "cmdType": "ImgClick",
+            "cmdParam": "button.jpg",
+            "cmdCound": 4
         },
         {
-            "cmdType": "Wait",
-            "cmdParam":3,
-            "cmdCound":1
+            "cmdType": "Sleep",
+            "cmdParam": 3,
+            "cmdCound": 1
         },
         {
             "cmdType": "Swipe",
-            "cmdParam":{
-                "originX":960,
-                "originY":950,
-                "targetX":960,
-                "targetY":600
-            },
-            "cmdCound":1
+            "cmdParam": {
+                "originX": 960,
+                "originY": 950,
+                "targetX": 960,
+                "targetY": 600
+            }
         },
         {
-            "cmdType": "ClickElement",
-            "cmdParam":{
-                "key":"text",
-                "value":"朋友圈"
-            },
-            "cmdCound":"点击"
+            "cmdType": "ElementClick",
+            "cmdParam": {
+                "key": "text",
+                "value": "朋友圈"
+            }
+        },
+        {
+            "cmdType": "KeyEventInput",
+            "cmdParam": "BACK"
+        },
+        {
+            "cmdType": "TextInput",
+            "cmdParam": "BACK2222222"
+        },
+        {
+            "cmdType": "ImgCature",
+            "cmdParam": "ttttttttttt.jpg"
+        },
+        {
+            "cmdType": "AppStart",
+            "cmdParam": "com.tencent.mm/.ui.LauncherUI"
         }
     ]
 }

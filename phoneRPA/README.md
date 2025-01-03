@@ -22,7 +22,7 @@ const data =  [
             "cmdCound":0
         },
         {
-            "cmdType": "ClickPosition",
+            "cmdType": "Click",
             "cmdParam":{
                 "x":460,
                 "y":450
