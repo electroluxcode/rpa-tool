@@ -53,23 +53,6 @@ clone 仓库或者 从 https://github.com/electroluxcode/rpa-tool/releases 下�
 
 
 
-## exe example
-
-
-
-
-
-### Window
-
-
-
-
-
-
-
-### Android
-
-
 
 
 
@@ -83,6 +66,44 @@ clone 仓库或者 从 https://github.com/electroluxcode/rpa-tool/releases 下�
 
 
 pc端识图参数可以参考 pcRPA\pcDataExample.json  这个json的文件，参数可能有一些变化
+
+
+如果是想运行json数据，那么参考 example.json的数据，然后运行 pcRPA.py 和 phoneRPA.py 就可以了
+
+如果是想运行exe 和 cli.py, 使用示例如下 
+
+```js
+const { exec } = require('child_process');
+
+const data =  [
+  {
+    "cmdType": "Click",
+    "cmdParam": {
+        "x": 100,
+        "y": 100,
+        "clicks": 2
+    }
+},
+]
+
+  const normalJsonStr = JSON.stringify(data)
+  const escapedJsonStr = (normalJsonStr).replaceAll("\"", "\\\"").replaceAll("\\\\", "\\")
+  console.log("'" +escapedJsonStr+ "'");
+  
+  exec('pcRPAToolCli.exe ' + escapedJsonStr, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`执行的错误: ${error}`);
+      return;
+    }
+    console.log(`标准输出: ${stdout}`);
+    if (stderr) {
+      console.error(`标准错误输出: ${stderr}`);
+    }
+  });
+
+
+```
+
 
 
 
