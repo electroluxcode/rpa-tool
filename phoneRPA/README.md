@@ -12,43 +12,6 @@
 - RPAToolCli.py 用来执行命令行的代码，以供其他语言直接调用，以下是调用实例
 - RPAToolCli.exe 在released中，功能和RPAToolCli.py 相同，打包是为了方便使用
 
-```js
-const { exec } = require('child_process');
- 
-const data =  [
-  {
-            "cmdType": "Back",
-            "cmdParam":0,
-            "cmdCound":0
-        },
-        {
-            "cmdType": "Click",
-            "cmdParam":{
-                "x":460,
-                "y":450
-            },
-            "cmdCound":1
-        },
- 
-]
-
-const normalJsonStr = JSON.stringify(data)
-const escapedJsonStr = (normalJsonStr).replaceAll("\"", "\\\"").replaceAll("\\\\", "\\")
-console.log("'" +escapedJsonStr+ "'");
-
-exec('phoneRPAToolCli.exe ' + escapedJsonStr, (error, stdout, stderr) => {
-  if (error) {
-    console.error(`执行的错误: ${error}`);
-    return;
-  }
-  console.log(`标准输出: ${stdout}`);
-  if (stderr) {
-    console.error(`标准错误输出: ${stderr}`);
-  }
-});
-
-
-```
 
 
 ## 打包

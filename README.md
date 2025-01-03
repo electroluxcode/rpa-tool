@@ -61,26 +61,22 @@ clone 仓库或者 从 https://github.com/electroluxcode/rpa-tool/releases 下�
         "cmdParam": {
             "x": 460,
             "y": 450
-        },
-        "cmdCound": 1
+        }
     },
     {
         "cmdType": "ElementClick",
         "cmdParam": {
             "key": "text",
             "value": "朋友圈"
-        },
-        "cmdCound": 1
+        }
     },
     {
         "cmdType": "ImgClick",
-        "cmdParam": "button.jpg",
-        "cmdCound": 4
+        "cmdParam": "button.jpg"
     },
     {
         "cmdType": "Sleep",
-        "cmdParam": 3,
-        "cmdCound": 1
+        "cmdParam": 3
     },
     {
         "cmdType": "Swipe",
