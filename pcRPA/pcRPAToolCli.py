@@ -1,8 +1,8 @@
 import pyautogui
 import time
-import pyperclip
 import json
 import sys
+import pyperclip
 #定义鼠标事件
 #pyautogui库其他用法 https://blog.csdn.net/qingfengxd1/article/details/108270159
 
@@ -20,6 +20,7 @@ def mouseClick(clickTimes,lOrR,img,reTry):
                 time.sleep(0.5)
             except:
                 print("未找到匹配图片,0.5秒后重试")
+                time.sleep(0.5)
                 pass
     elif reTry > 1:
         i = 1
@@ -51,62 +52,88 @@ def mainWork(allData):
     while i < len(allData):
         cmdType = allData[i]["cmdType"]
         cmdParam = allData[i]["cmdParam"]
-        cmdCound = allData[i]["cmdCound"]
 
-        # 1.点击鼠标
-        if cmdType == "ClickPosition":   
-            pyautogui.click(x=cmdParam["x"], y=cmdParam["y"], clicks=cmdCound, interval=0.25, button='left')
-            print("点击",cmdParam,cmdCound,"次")
+        if cmdType == "Click":   
+            pyautogui.click( 
+                x=cmdParam.get("x"), 
+                y=cmdParam.get("y"), 
+                clicks=cmdParam.get("clicks", 1), 
+                interval=cmdParam.get("interval", 0), 
+                button=cmdParam.get("button", "left")
+            )
+            print("点击",cmdParam,"次")
 
-        # 2.MouseMove
-        if cmdType == "MouseMove":   
-            pyautogui.moveTo(x=cmdParam["x"], y=cmdParam["y"], duration=0.25)
+        if cmdType == "MoveTo":   
+            pyautogui.moveTo(
+                x=cmdParam.get("x"), 
+                y=cmdParam.get("y"), 
+                duration=cmdParam.get("duration", 0.25)
+            )
             print("MouseMove到",cmdParam)
 
-        # 3.MouseDrag
-        if cmdType == "MouseDrag":   
-            pyautogui.dragTo(x=cmdParam["x"], y=cmdParam["y"], duration=0.25,button='left')
+        # 3.DragTo
+        if cmdType == "DragTo":  
+            pyautogui.dragTo(
+                x=cmdParam.get("x"), 
+                y=cmdParam.get("y"), 
+                duration=cmdParam.get("duration", 0.25), 
+                button=cmdParam.get("button", "left")
+            )
             print("MouseDrag到",cmdParam)
 
-        # 4.ClickImage
-        if cmdType == "ClickImage":   
-            mouseClick(1,"left",cmdParam,cmdCound)
-            print("点击",cmdParam,cmdCound,"次")
+        # 4.ImgClick
+        if cmdType == "ImgClick":   
+            mouseClick(
+                1,
+                cmdParam.get("button","left"),
+                cmdParam.get("imgPath"),
+                cmdParam.get("reTry", 1)
+            )
+            print("点击",cmdParam,"次")
 
-        # 5.RightClick点击
-        if cmdType == "RightClick":
-            mouseClick(1,"right",cmdParam,cmdCound)
-            print("RightClick",cmdParam,cmdCound,"次")
         
-        # 6.Input
-        if cmdType == "Input":
-            pyperclip.copy(cmdParam)
-            pyautogui.hotkey('ctrl','v')
-            time.sleep(0.5)
-            print("Input:",cmdParam)                                        
+        # 6.Write
+        if cmdType == "Write":
+            pyautogui.write(
+                message=cmdParam.get("message"), 
+                interval=cmdParam.get("interval", 0.25)
+            )
+            print("Write:",cmdParam)                                        
         
-        # 7.Wait
-        if cmdType == "Wait":
+        # 7.Sleep
+        if cmdType == "Sleep":
             time.sleep(cmdParam)
-            print("Wait",cmdParam,"秒")
+            print("Sleep",cmdParam,"秒")
         
         # 8.滚轮
-        if cmdType == "Wheel":
-            pyautogui.scroll(int(cmdParam))
-            print("滚轮滑动",int(cmdParam),"距离")  
+        if cmdType == "Scroll":
+            pyautogui.scroll(
+                cmdParam
+            )
+            print("Scroll")  
         
-        # 9.网页刷新
-        if cmdType == "SiteFresh":
-            time.sleep(2)
-            pyautogui.keyDown('f5')
-            print("SiteFresh")
-            time.sleep(0.5)
+        # 9.
+        if cmdType == "KeyDown":
+            pyautogui.keyDown(cmdParam)
+            print("KeyDown")
         
-        # 10.tab栏目切换
-        if cmdType == "TabSwitch":
-            print("TabSwitch")
-            pyautogui.hotkey('ctrl','tab')
-            time.sleep(1)           
+        # 10
+        if cmdType == "KeyUp":
+            print("KeyUp")
+            pyautogui.keyUp(cmdParam)
+
+        if cmdType == "Press":
+            print("press")
+            pyautogui.press(
+                keys=cmdParam.get("keys"),
+                presses=cmdParam.get("presses", 1),
+                interval=cmdParam.get("interval", 0),
+            )
+        
+        if cmdType == "ChineseWrite":
+            pyperclip.copy(cmdParam)
+            time.sleep(0.2)
+            pyautogui.hotkey('ctrl', 'v')
         i += 1
 
 if __name__ == '__main__':
@@ -119,15 +146,6 @@ if __name__ == '__main__':
             param_dict = json.loads(sys.argv[1])
             print(param_dict)
             """
-step1: 定义传参
-const data =  '[{ "cmdType": "ClickPosition", "cmdParam":{ "x":146, "y":400 }, "cmdCound":1 }]'
-
-const normalJsonStr = JSON.stringify(data)
-const escapedJsonStr = (normalJsonStr).replaceAll("\"", "\\\"").replaceAll("\\\\", "\\")
-// 传参的值
-console.log(escapedJsonStr);
-step2 : python pcRPAToolCli.py [{\"cmdType\":\"ClickPosition\",\"cmdParam\":{\"x\":146,\"y\":400},\"cmdCound\":1}]
-
             """
             mainWork(param_dict)
         except json.JSONDecodeError as e:

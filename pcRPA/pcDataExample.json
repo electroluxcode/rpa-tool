@@ -1,48 +1,88 @@
 {
     "name": "Electrolux",
-    "description":{
-        "cmdType":["ClickImage","RightClick","Input","Wait","Wheel","SiteFresh","TabSwitch","ClickPosition", "MouseMove", "MouseDrag" ],
-        "Cn":  ["点击图片","右键","输入","等待","滚轮","网页刷新","网页tab栏切换","点击坐标", "鼠标移动", "鼠标拖拽"],
-        "cmdParam":["图片名字(png格式)","输入内容","等待时长"]
+    "description": {
+        "cmdType": [
+            "ImgClick",
+            "ImgRightClick",
+            "Write",
+            "Sleep",
+            "Scroll",
+            "SiteFresh",
+            "KeyUp",
+            "Click",
+            "MoveTo",
+            "DragTo"
+        ],
+        "Cn": [
+            "点击图片",
+            "右键",
+            "输入",
+            "等待",
+            "滚轮",
+            "网页刷新",
+            "网页tab栏切换",
+            "点击坐标",
+            "鼠标移动",
+            "鼠标拖拽"
+        ]
     },
     "data": [
         {
-            "cmdType": "ClickImage",
-            "cmdParam":"red1.png",
-            "cmdCound":1
+            "cmdType": "Click",
+            "cmdParam": {
+                "x": 100,
+                "y": 100,
+                "clicks": 2
+            }
         },
         {
-            "cmdType": "Wait",
-            "cmdParam":2,
-            "cmdCound":null
-        },{
-            "cmdType": "ClickPosition",
-            "cmdParam":{
-                "x":146,
-                "y":400
-            },
-            "cmdCound":1
-        },{
-            "cmdType": "Wheel",
-            "cmdParam":200,
-            "cmdCound":null
-        },
-         {
-            "cmdType": "MouseMove",
-            "cmdParam":{
-                "x":213,
-                "y":410
-            },
-            "cmdCound":1
+            "cmdType": "Press",
+            "cmdParam": {
+                "keys": "enter",
+                "presses": 1
+            }
         },
         {
-            "cmdType": "MouseDrag",
-            "cmdParam":{
-                "x":1246,
-                "y":400
-            },
-            "cmdCound":1
+            "cmdType": "MoveTo",
+            "cmdParam": {
+                "x": 100,
+                "y": 100
+            }
+        },
+        {
+            "cmdType": "DragTo",
+            "cmdParam": {
+                "x": 100,
+                "y": 100
+            }
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "button.jpg"
+            }
+        },
+        {
+            "cmdType": "Write",
+            "cmdParam": {
+                "message": "button.jpg"
+            }
+        },
+        {
+            "cmdType": "Scroll",
+            "cmdParam": 10
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": "enter"
+        },
+        {
+            "cmdType": "KeyUp",
+            "cmdParam": "enter"
+        },
+        {
+            "cmdType": "ChineseWrite",
+            "cmdParam": "你好"
         }
-       
     ]
 }

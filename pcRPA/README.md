@@ -16,28 +16,28 @@ const { exec } = require('child_process');
  
 const data =  [
   {
-      "cmdType": "ClickImage",
+      "cmdType": "ImgClick",
       "cmdParam":"button.jpg",
       "cmdCound":1
   },
   {
-      "cmdType": "Wait",
+      "cmdType": "Sleep",
       "cmdParam":2,
       "cmdCound":null
   },{
-      "cmdType": "ClickPosition",
+      "cmdType": "Click",
       "cmdParam":{
           "x":146,
           "y":400
       },
       "cmdCound":1
   },{
-      "cmdType": "Wheel",
+      "cmdType": "Scroll",
       "cmdParam":200,
       "cmdCound":null
   },
    {
-      "cmdType": "MouseMove",
+      "cmdType": "MoveTo",
       "cmdParam":{
           "x":213,
           "y":410
@@ -45,7 +45,7 @@ const data =  [
       "cmdCound":1
   },
   {
-      "cmdType": "MouseDrag",
+      "cmdType": "DragTo",
       "cmdParam":{
           "x":1246,
           "y":400
