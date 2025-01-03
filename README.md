@@ -53,13 +53,139 @@ clone 仓库或者 从 https://github.com/electroluxcode/rpa-tool/releases 下�
 
 
 
-手机识图示例, 具体的参数可以参考 phoneRPA\phoneDataExample.json  这个json的文件，参数可能有一些变化
+手机识图示例, 具体的参数可以参考 phoneRPA\phoneDataExample.json  这个json的文件
+```js
+"data": [
+    {
+        "cmdType": "Click",
+        "cmdParam": {
+            "x": 460,
+            "y": 450
+        },
+        "cmdCound": 1
+    },
+    {
+        "cmdType": "ElementClick",
+        "cmdParam": {
+            "key": "text",
+            "value": "朋友圈"
+        },
+        "cmdCound": 1
+    },
+    {
+        "cmdType": "ImgClick",
+        "cmdParam": "button.jpg",
+        "cmdCound": 4
+    },
+    {
+        "cmdType": "Sleep",
+        "cmdParam": 3,
+        "cmdCound": 1
+    },
+    {
+        "cmdType": "Swipe",
+        "cmdParam": {
+            "originX": 960,
+            "originY": 950,
+            "targetX": 960,
+            "targetY": 600
+        }
+    },
+    {
+        "cmdType": "ElementClick",
+        "cmdParam": {
+            "key": "text",
+            "value": "朋友圈"
+        }
+    },
+    {
+        "cmdType": "KeyEventInput",
+        "cmdParam": "BACK"
+    },
+    {
+        "cmdType": "TextInput",
+        "cmdParam": "BACK2222222"
+    },
+    {
+        "cmdType": "ImgCature",
+        "cmdParam": "ttttttttttt.jpg"
+    },
+    {
+        "cmdType": "AppStart",
+        "cmdParam": "com.tencent.mm/.ui.LauncherUI"
+    }
+]
+```
+
+
 
 <img src = "./img/mobile.gif">
 
 
-pc端识图参数可以参考 pcRPA\pcDataExample.json  这个json的文件，参数可能有一些变化
+pc端识图参数可以参考 pcRPA\pcDataExample.json  这个json的文件
 
+```js
+
+"data": [
+    {
+        "cmdType": "Click",
+        "cmdParam": {
+            "x": 100,
+            "y": 100,
+            "clicks": 2
+        }
+    },
+    {
+        "cmdType": "Press",
+        "cmdParam": {
+            "keys": "enter",
+            "presses": 1
+        }
+    },
+    {
+        "cmdType": "MoveTo",
+        "cmdParam": {
+            "x": 100,
+            "y": 100
+        }
+    },
+    {
+        "cmdType": "DragTo",
+        "cmdParam": {
+            "x": 100,
+            "y": 100
+        }
+    },
+    {
+        "cmdType": "ImgClick",
+        "cmdParam": {
+            "imgPath": "button.jpg"
+        }
+    },
+    {
+        "cmdType": "Write",
+        "cmdParam": {
+            "message": "button.jpg"
+        }
+    },
+    {
+        "cmdType": "Scroll",
+        "cmdParam": 10
+    },
+    {
+        "cmdType": "KeyDown",
+        "cmdParam": "enter"
+    },
+    {
+        "cmdType": "KeyUp",
+        "cmdParam": "enter"
+    },
+    {
+        "cmdType": "ChineseWrite",
+        "cmdParam": "你好"
+    }
+]
+```
 
 如果是想运行json数据，那么参考 example.json的数据，然后运行 pcRPA.py 和 phoneRPA.py 就可以了
 
