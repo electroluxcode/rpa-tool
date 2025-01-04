@@ -14,7 +14,7 @@ rpa-tool
 <br />
 </a>
 <br />
-用于window和anroid系统上的rpa工具类实例
+用于window和android系统上的rpa工具类实例
 </sup>
 </div>
 
