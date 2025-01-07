@@ -12,6 +12,7 @@
 
 
 ## 打包
+
 pip install pyinstaller  -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
 pyinstaller -F -w -i ./ico/rpa.png  pcRPAToolCli.py
 
@@ -24,8 +25,9 @@ conda create -n autoPC python=3.7
 conda activate autoPC    
 
 pip install pyperclip xlrd pillow -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
-
+pip install python-socketio eventlet -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
 pip install opencv-python==4.5.3.56 pyautogui==0.9.50 -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
+pip install pypiwin32   socketio eventlet  -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
 
 python pcRPA.py   
 

@@ -190,19 +190,21 @@ pc端识图参数可以参考 pcRPA\pcDataExample.json  这个json的文件
 ```js
 const { exec } = require('child_process');
 
+const formatText = (text) => {
+    return JSON.stringify(text).replaceAll("\"", "\\\"").replaceAll("\\\\", "\\").replaceAll("\\n", " ");
+}
+
+const text = `
+const dom = document.createElement('div');
+`
+
 const data =  [
   {
-    "cmdType": "Click",
-    "cmdParam": {
-        "x": 100,
-        "y": 100,
-        "clicks": 2
-    }
+    "cmdType": "WebRPA",
+    "cmdParam": (text)
 },
 ]
-
-  const normalJsonStr = JSON.stringify(data)
-  const escapedJsonStr = (normalJsonStr).replaceAll("\"", "\\\"").replaceAll("\\\\", "\\")
+  const escapedJsonStr = formatText(data)
   console.log("'" +escapedJsonStr+ "'");
   
   exec('pcRPAToolCli.exe ' + escapedJsonStr, (error, stdout, stderr) => {
@@ -304,8 +306,15 @@ tree /f > list.txt 生成
 
 ## Support
 
-frontEngineerPlugin is developed by me. Please use frontEngineerPlugin, star it on gitee or even become a [sponsor](https://gitee.com/Electrolux) to support us!
+
 
 
 
 ## update
+
+
+
+2025/01/06 新增网页ws插件和socket(webrpa类型)，用于在浏览器上执行执行化自动化操作
+
+![image-20250106003335701](README.assets/image-20250106003335701.png)
+
