@@ -1,0 +1,84 @@
+{
+    "name": "Electrolux",
+    "description": {
+    
+    },
+    "data": [
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 5
+        },
+        {
+            "cmdType": "Click",
+            "description": "点击自动收集",
+            "cmdParam": {
+                "x": 174,
+                "y": 1420,
+                "clicks": 1
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "description": "自动收集的时间",
+            "cmdParam": 600
+        },
+        {
+            "cmdType": "Click",
+            "description": "场景内点击 返航",
+            "cmdParam": {
+                "x": 1831,
+                "y": 1365,
+                "clicks": 1
+            }
+        },{
+            "cmdType": "Sleep",
+            "cmdParam": 5
+        }, {
+            "cmdType": "Click",
+            "description": "地图选择 赛尔号",
+            "cmdParam": {
+                "x": 230    ,
+                "y": 1380,
+                "clicks": 2
+            }
+        },   {
+            "cmdType": "Sleep",
+            "cmdParam": 12
+        },
+        {
+            "cmdType": "Click",
+            "description": "赛尔号内点击 探险",
+            "cmdParam": {
+                "x": 2345,
+                "y": 825,
+                "clicks": 1
+            }
+        },{
+            "cmdType": "Sleep",
+            "cmdParam": 8
+        },
+        {
+            "cmdType": "Click",
+            "description": "选择 可洛星地图",
+            "cmdParam": {
+                "x": 1040,
+                "y": 590,
+                "clicks": 1
+            }
+        },{
+            "cmdType": "Sleep",
+            "cmdParam": 2
+        },{
+            "cmdType": "Click",
+            "description": "点击出发",
+            "cmdParam": {
+                "x": 2300,
+                "y": 1300,
+                "clicks": 1
+            }
+        },{
+            "cmdType": "Sleep",
+            "cmdParam": 2
+        }
+    ]
+}
