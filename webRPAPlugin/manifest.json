@@ -1,0 +1,53 @@
+{
+  "name": "rpa_tool_plugin",
+  "version": "0.1",
+  "manifest_version": 3,
+  "description": "rpa配套chrome插件,https://github.com/electroluxcode/rpa-tool",
+  "icons": {
+    "16": "data/icons/48.png",
+    "48": "data/icons/48.png",
+    "32": "data/icons/48.png",
+    "128": "data/icons/48.png"
+  },
+  "author": "Electrolux",
+  "permissions": [
+    "bookmarks", 
+    "storage", 
+    "declarativeNetRequestFeedback",
+    "declarativeNetRequest", 
+    "declarativeNetRequestWithHostAccess"
+  ],
+  "declarative_net_request": {
+		"rule_resources": [{
+			"id": "ruleset_1",
+			"enabled": true,
+			"path": "rule.json"
+		}]
+	},
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "data/icons/48.png",
+      "48": "data/icons/48.png",
+      "32": "data/icons/48.png",
+      "128": "data/icons/48.png"
+    }
+  },
+  "background": {
+ "service_worker": "js/background.js"
+      
+  },
+  "host_permissions": [
+    "<all_urls>"
+  ],
+	"content_scripts": 
+	[
+		{
+			"matches": ["<all_urls>"],
+			"js": ["js/install.js", "js/socket.io.min.js"],
+      "web_accessible_resources": ["js/install.js"],
+			"run_at": "document_start"
+		}
+	]
+  
+}

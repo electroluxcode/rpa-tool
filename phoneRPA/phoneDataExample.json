@@ -10,11 +10,6 @@
             "SiteFresh",
             "Click",
             "Back"
-        ],
-        "cmdParam": [
-            "图片名字(png格式)",
-            "Input内容",
-            "Wait时长"
         ]
     },
     "data": [
@@ -23,26 +18,22 @@
             "cmdParam": {
                 "x": 460,
                 "y": 450
-            },
-            "cmdCound": 1
+            }
         },
         {
             "cmdType": "ElementClick",
             "cmdParam": {
                 "key": "text",
                 "value": "朋友圈"
-            },
-            "cmdCound": 1
+            }
         },
         {
             "cmdType": "ImgClick",
-            "cmdParam": "button.jpg",
-            "cmdCound": 4
+            "cmdParam": "button.jpg"
         },
         {
             "cmdType": "Sleep",
-            "cmdParam": 3,
-            "cmdCound": 1
+            "cmdParam": 3
         },
         {
             "cmdType": "Swipe",

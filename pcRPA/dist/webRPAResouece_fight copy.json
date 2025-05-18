@@ -1,0 +1,78 @@
+{
+    "name": "Electrolux",
+    "description": {
+    
+    },
+    "keluo": {
+        "x": 1040,
+        "y": 590
+    },
+    "shuixing": {
+        "x": 1970,
+        "y": 500
+    },
+    "yunxiao": {
+        "x": 1550,
+        "y": 850
+    },
+    "data": [
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 6
+        },
+        {
+            "cmdType": "Click",
+            "description": "点击 战斗",
+            "cmdParam": {
+                "x": 2300,
+                "y": 1300,
+                "clicks": 2
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 8
+        },
+        {
+            "cmdType": "Click",
+            "description": "点击 第四个技能",
+            "cmdParam": {
+                "x": 1945,
+                "y": 1275,
+                "clicks": 2
+            }
+        }, {
+            "cmdType": "Sleep",
+            "cmdParam": 5
+        },
+        {
+            "cmdType": "Click",
+            "description": "去除遮罩",
+            "cmdParam": {
+                "x": 1840,
+                "y": 1300,
+                "clicks": 2
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 3
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "A",
+                "duration": 0.8
+            }
+        },{
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },{
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "S",
+                "duration": 0.8
+            }
+        }
+    ]
+}

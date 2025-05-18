@@ -36,6 +36,10 @@
             }
         },
         {
+            "cmdType": "Sleep",
+            "cmdParam": 2
+        },
+        {
             "cmdType": "Press",
             "cmdParam": {
                 "keys": "enter",
@@ -83,6 +87,9 @@
         {
             "cmdType": "ChineseWrite",
             "cmdParam": "你好"
+        },{
+             "cmdType": "WebRPA",
+            "cmdParam": ""
         }
     ]
 }

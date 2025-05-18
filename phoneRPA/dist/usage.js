@@ -2,26 +2,20 @@ const { exec } = require('child_process');
  
 const data =  [
   {
-            "cmdType": "Back",
-            "cmdParam":0,
-            "cmdCound":0
-        },
-        {
-            "cmdType": "ClickPosition",
-            "cmdParam":{
-                "x":460,
-                "y":450
-            },
-            "cmdCound":1
-        },
- 
+    "cmdType": "Click",
+    "cmdParam": {
+        "x": 100,
+        "y": 100,
+        "clicks": 2
+    }
+},
 ]
 
 const normalJsonStr = JSON.stringify(data)
 const escapedJsonStr = (normalJsonStr).replaceAll("\"", "\\\"").replaceAll("\\\\", "\\")
 console.log("'" +escapedJsonStr+ "'");
 
-exec('phoneRPAToolCli.exe ' + escapedJsonStr, (error, stdout, stderr) => {
+exec('pcRPAToolCli.exe ' + escapedJsonStr, (error, stdout, stderr) => {
   if (error) {
     console.error(`执行的错误: ${error}`);
     return;

@@ -12,22 +12,32 @@
 
 
 ## 打包
+
 pip install pyinstaller  -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
-pyinstaller -F -w -i ./ico/rpa.png  pcRPAToolCli.py
+pyinstaller -F  -i ./ico/rpa.png  pcRPA.py
+
+-F：生成单个可执行文件
+-w：不显示控制台窗口（Windows 系统下）
+-i ./ico/rpa.png：设置应用程序图标
 
 ## 开发
 ```js
 --1.去到这个网站然后下载，注意只为我安装就可以添加到环境变量
 https://repo.anaconda.com/archive/
 --2.安装完后运行命令
-conda create -n autoPC python=3.7
-conda activate autoPC    
+conda create -n autoPCGame python=3.7
+conda activate autoPCGame    
 
 pip install pyperclip xlrd pillow -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
 
-pip install opencv-python==4.5.3.56 pyautogui==0.9.50 -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
+pip install python-socketio eventlet -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
 
-python pcRPA.py   
+ python -m pip install opencv-python==4.5.3.56 pyautogui==0.9.54 -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
+
+
+pip install pypiwin32   socketio eventlet  -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
+
+python pcRPA.py   AA
 
 
 --3.然后我们看到pcData.json中

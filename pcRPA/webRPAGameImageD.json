@@ -1,0 +1,620 @@
+{
+    "name": "Electrolux",
+    "description": {
+        "cmdType": [
+            "ImgClick",
+            "ImgRightClick",
+            "Write",
+            "Sleep",
+            "Scroll",
+            "SiteFresh",
+            "KeyUp",
+            "Click",
+            "MoveTo",
+            "DragTo",
+            "TextClick"
+        ],
+        "Cn": [
+            "点击图片",
+            "右键",
+            "输入",
+            "等待",
+            "滚轮",
+            "网页刷新",
+            "网页tab栏切换",
+            "点击坐标",
+            "鼠标移动",
+            "鼠标拖拽",
+            "识别文字并点击"
+        ]
+    },
+    "data": [
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },      {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "Sleep",
+            "cmdParam": 0.5
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": {
+                "key": "D",
+                "duration": 0.4
+            }
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "imgPath": "./fight.png",
+                "reTry": 6,
+                "region": "right_bottom",
+                "thenActions": [
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },
+                    {
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    },
+                    {
+                        "cmdType": "Sleep",
+                        "cmdParam": 3
+                    },{
+                        "cmdType": "Click",
+                        "cmdParam": {
+                            "x": "730",
+                            "y": "1303"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

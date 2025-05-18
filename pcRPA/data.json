@@ -1,0 +1,8 @@
+[{
+    "cmdType": "Sleep",
+    "cmdParam": 1
+},
+{
+    "cmdType": "WebRPA",
+    "cmdParam": "console.log(Array.from(document.querySelectorAll('.tptt')).map(e=>{return e.innerHTML}))"
+}]

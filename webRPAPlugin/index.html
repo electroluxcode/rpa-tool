@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Socket.IO 聊天室</title>
+		<script src="./js/socket.io.min.js"></script>
+		<link href="./css/bootstrap.min.css" rel="stylesheet" />
+	</head>
+
+    <style>
+        .container {
+            min-width: 300px;
+        }
+    </style>
+	<body>
+        <div class="container">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="page-header">
+                        <div align="center">
+                            <h3>rpa tool</h3>
+                           
+                        </div>
+                    </div>
+                    <div class="tool-form">
+                        <form class="form-row">
+                            <div class="form-btn" style="display: flex; align-items: center;">
+                                <span for="portRange" style="margin: 2px 4px;">Port:</span>
+                                <input type="text" class="form-control" id="port" placeholder="端口号" 
+                                    >
+                              
+                            </div>
+                            <div class="form-btn" style="display: flex;  align-items: center;">
+                                <span for="portRange" style="margin: 6px 4px;">isOpen:</span>
+                                <input name="switch" type="checkbox" id="isOpen" >
+                              
+                            </div>
+
+                            <div class="form-btn" style="display: flex; align-items: center;">
+                                <span style="margin: 6px 4px;">include:</span>
+                                <input type="text" class="form-control" id="include" placeholder="作用的范围,填入正则表达式" 
+                                >
+                              
+                            </div>
+                            <div class="form-btn" style="display: flex;  align-items: center; margin-top: 10px;">
+                                <!-- <span style="margin: 2px 4px;">send to server:</span> -->
+                                <input type="text" class="form-control" id="messageInput" placeholder="send to server" 
+                                    >
+                                <input class="btn" style="margin-left: 10px;" id="messageButton"  type="button" value="send to server">
+                                
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+		
+        <script src="func.js"></script>
+        <!-- <h1>聊天室</h1>
+    <div id="messages"></div>
+    <input id="message_input" placeholder="输入消息...">
+    <button onclick="sendMessage()">发送</button>
+
+    <script>
+        const socket = io('http://localhost:5000');
+
+        // 接收消息并展示
+        socket.on('chat_message', function(data) {
+            const messageDiv = document.getElementById('messages');
+            const newMessage = document.createElement('p');
+            newMessage.textContent = `${data.user}: ${data.message}`;
+            messageDiv.appendChild(newMessage);
+        });
+
+        // 发送消息
+        function sendMessage() {
+            const input = document.getElementById('message_input');
+            socket.emit('chat_message', {message: input.value});
+            input.value = '';
+        }
+    </script> -->
+	</body>
+</html>

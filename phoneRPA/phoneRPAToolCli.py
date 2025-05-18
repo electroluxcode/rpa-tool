@@ -3,6 +3,7 @@ import json
 import cv2
 import os
 import sys
+import getopt
 import numpy as np
 import xml.etree.ElementTree as ET
 import re
