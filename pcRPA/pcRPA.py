@@ -5,7 +5,7 @@ import sys
 import pyperclip
 import cv2
 import numpy as np
-
+import os
 # 确保 PyScreeze 正确导入
 try:
     import pyscreeze
@@ -111,7 +111,12 @@ def mainWork(allData):
     while i < len(allData):
         cmdType = allData[i]["cmdType"]
         cmdParam = allData[i]["cmdParam"]
-
+        if cmdType == "ShutDown":
+            timeout = cmdParam.get("timeout", 10)
+            print("电脑将在" + str(timeout) + "秒后关机")
+            os.system("shutdown -s -t " + str(timeout))
+            time.sleep(timeout+3)
+            break
         if cmdType == "Click":   
             try:
                 x = int(cmdParam.get("x"))
