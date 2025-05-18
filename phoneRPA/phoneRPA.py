@@ -135,7 +135,7 @@ if __name__ == '__main__':
     print('Electrolux_Phone_RPA欢迎使用')
     # 数据检查
     # checkCmd = dataCheck(allData)
-    f = open('phoneData.json', encoding='UTF-8')
+    f = open('phoneRPAResouece.json', encoding='UTF-8')
     allData = json.load(f)
     key = input('选择功能: 1.做一次 2.循环到死 \n')
     if key == '1':

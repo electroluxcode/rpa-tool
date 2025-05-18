@@ -241,7 +241,7 @@ if __name__ == '__main__':
     print('Electrolux_PC_RPA欢迎使用')
     #数据检查
     # checkCmd = dataCheck(allData)
-    A = open('webRPAResouece.json', encoding='UTF-8') 
+    A = open('pcRPAResouece.json', encoding='UTF-8') 
     allDataA = json.load(A)
     # D = open('webRPAGameImageD.json', encoding='UTF-8') 
     key=input('选择功能: 1.做一次 2.循环到死 \n')
