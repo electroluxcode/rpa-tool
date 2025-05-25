@@ -35,7 +35,7 @@ python -m pip install pyperclip xlrd pillow -i http://mirrors.aliyun.com/pypi/si
 
 python -m pip install opencv-python==4.11.0.86 pyautogui==0.9.54 -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
 
-python -m pip install PyQt5 numpy   -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com 
+python -m pip install PyQt5 numpy pynput  -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com 
 
 
 pip install python-socketio eventlet -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com

@@ -39,15 +39,18 @@ def command_line_mode():
         print("无效选择")
 
 if __name__ == '__main__':
+    # 默认gui
+    gui = True
+
     # 检查命令行参数
-    if len(sys.argv) > 1 and sys.argv[1] == '--gui':
+    if (len(sys.argv) > 1 and (sys.argv[1] == '--gui') or gui):
         # 直接启动GUI
         try:
             from rpa_gui import main as gui_main
             gui_main()
-        except ImportError:
-            print("错误: 无法导入GUI模块，请确保已安装PyQt5")
-            print("安装命令: pip install PyQt5")
+        except ImportError as e:
+            # 打印错误信息
+            print(e.msg)
     else:
         # 命令行模式
         command_line_mode()    
