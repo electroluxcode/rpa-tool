@@ -6,10 +6,9 @@
 
 核心是两个文件
 
-- pcRPA.py 用来执行json中的代码，默认读取 pcData.json 中的代码 
+- pcRPA.py --gui 用来执行json中的代码，默认读取 pcRPAResouece.json 中的代码 
 - pcRPAToolCli.py 用来执行命令行的代码，以供其他语言直接调用，以下是调用实例
 - pcRPAToolCli.exe 在released中，功能和pcRPAToolCli.py 相同，打包是为了方便使用
-
 
 ## 打包
 
@@ -25,19 +24,25 @@ pyinstaller -F  -i ./ico/rpa.png  pcRPA.py
 --1.去到这个网站然后下载，注意只为我安装就可以添加到环境变量
 https://repo.anaconda.com/archive/
 --2.安装完后运行命令
-conda create -n autoPCGame python=3.7
-conda activate autoPCGame    
 
-pip install pyperclip xlrd pillow -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
+conda config --set show_channel_urls yes
+
+conda create -n autoPC311-new python=3.11
+conda activate autoPC311-new  
+// pip install PyQt5
+
+python -m pip install pyperclip xlrd pillow -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
+
+python -m pip install opencv-python==4.11.0.86 pyautogui==0.9.54 -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
+
+python -m pip install PyQt5 numpy   -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com 
+
 
 pip install python-socketio eventlet -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
 
- python -m pip install opencv-python==4.5.3.56 pyautogui==0.9.54 -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
-
-
 pip install pypiwin32   socketio eventlet  -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
 
-python pcRPA.py   AA
+python pcRPA.py  
 
 
 --3.然后我们看到pcData.json中
