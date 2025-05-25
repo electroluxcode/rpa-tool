@@ -111,7 +111,7 @@ class QtInspector(QWidget):
         # 添加到分割器
         splitter.addWidget(left_widget)
         splitter.addWidget(right_widget)
-        splitter.setSizes([400, 800])
+        splitter.setSizes([600, 800])
         
         # 初始化树
         self.refresh_tree()

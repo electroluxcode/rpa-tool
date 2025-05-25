@@ -16,13 +16,116 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "pyscreeze"])
     import pyscreeze
 
+# 导入OCR相关模块
+try:
+    from .ocr.PPOCR_api import GetOcrApi
+    import subprocess
+    from PIL import ImageGrab
+except ImportError:
+    try:
+        from ocr.PPOCR_api import GetOcrApi
+        import subprocess
+        from PIL import ImageGrab
+    except ImportError:
+        print("警告: OCR模块导入失败，OCR功能将不可用")
+        GetOcrApi = None
+
 class RPACommand:
     def __init__(self, callback=None):
         self.callback = callback  # 用于向界面发送状态更新
         self.is_running = False
         self.should_stop = False
         self._stop_event = threading.Event()
+        self.ocr_api = None
+        self._init_ocr()
     
+    def _init_ocr(self):
+        """初始化OCR引擎"""
+        if GetOcrApi is None:
+            self.log("OCR模块不可用")
+            return
+            
+        try:
+            # 查找PaddleOCR-json.exe路径
+            path = self._find_paddleocr_exe()
+            if path:
+                self.ocr_api = GetOcrApi(path)
+                self.log(f"OCR引擎初始化成功，进程号为{self.ocr_api.ret.pid}")
+            else:
+                self.log("未找到PaddleOCR-json.exe，OCR功能不可用")
+        except Exception as e:
+            self.log(f"OCR引擎初始化失败: {str(e)}")
+    
+    def _find_paddleocr_exe(self):
+        """查找PaddleOCR-json.exe的路径"""
+        try:
+            result = subprocess.run(['where', 'PaddleOCR-json.exe'], 
+                                  capture_output=True, text=True, check=True)
+            paths = result.stdout.strip().split('\n')
+            if paths:
+                return paths[0]
+        except subprocess.CalledProcessError:
+            pass
+        return None
+    
+    def _perform_ocr_on_screen(self):
+        """对当前屏幕进行OCR识别"""
+        if not self.ocr_api:
+            self.log("OCR引擎未初始化")
+            return None
+            
+        try:
+            # 截取屏幕
+            img = ImageGrab.grab()
+            temp_path = os.path.join(os.path.dirname(__file__), "temp_screenshot.png")
+            img.save(temp_path)
+            
+            # 进行OCR识别
+            result = self.ocr_api.run(temp_path)
+            
+            # 清理临时文件
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+                
+            if result["code"] == 100:
+                return result["data"]
+            else:
+                self.log(f"OCR识别失败: {result['data']}")
+                return None
+                
+        except Exception as e:
+            self.log(f"OCR识别过程出错: {str(e)}")
+            return None
+    
+    def _find_text_in_ocr_results(self, ocr_results, target_texts):
+        """在OCR结果中查找目标文本"""
+        if not ocr_results:
+            return None
+            
+        for text_block in ocr_results:
+            text = text_block.get("text", "")
+            for target in target_texts:
+                if target in text:
+                    # 计算文本块的中心位置
+                    box = text_block.get("box", [])
+                    if len(box) >= 4:
+                        # box格式: [[x1,y1], [x2,y2], [x3,y3], [x4,y4]]
+                        x_coords = [point[0] for point in box]
+                        y_coords = [point[1] for point in box]
+                        center_x = sum(x_coords) // len(x_coords)
+                        center_y = sum(y_coords) // len(y_coords)
+                        
+                        self.log(f"找到目标文本 '{target}' 在位置: ({center_x}, {center_y})")
+                        return {
+                            "text": text,
+                            "target": target,
+                            "center_x": center_x,
+                            "center_y": center_y,
+                            "box": box,
+                            "score": text_block.get("score", 0)
+                        }
+        return None
+
     def log(self, message):
         """发送日志消息到界面"""
         if self.callback:
@@ -35,6 +138,13 @@ class RPACommand:
         self.is_running = False
         self._stop_event.set()
         self.log("收到停止信号")
+        
+        # 清理OCR引擎
+        if self.ocr_api:
+            try:
+                self.ocr_api.exit()
+            except:
+                pass
     
     def interruptible_sleep(self, duration):
         """可中断的睡眠函数"""
@@ -151,7 +261,101 @@ class RPACommand:
             
             self.log(f"执行命令 {i+1}/{len(allData)}: {cmdType}")
             
-            if cmdType == "ShutDown":
+            if cmdType == "OCR":
+                # 执行OCR识别和后续操作
+                target_texts = cmdParam.get("target", [])
+                then_actions = cmdParam.get("then", [])
+                
+                self.log(f"开始OCR识别，查找目标文本: {target_texts}")
+                
+                # 进行OCR识别
+                ocr_results = self._perform_ocr_on_screen()
+                if ocr_results:
+                    # 查找目标文本
+                    found_text = self._find_text_in_ocr_results(ocr_results, target_texts)
+                    
+                    if found_text and then_actions and not self.should_stop:
+                        self.log(f"找到目标文本 '{found_text['target']}'，执行后续操作")
+                        
+                        # 设置当前OCR结果为上下文，供后续操作使用
+                        self._current_ocr_context = found_text
+                        
+                        # 执行后续操作
+                        self.mainWork(then_actions)
+                        
+                        # 清理上下文
+                        self._current_ocr_context = None
+                        
+                        self.log("OCR后续操作执行完毕，继续主流程")
+                    else:
+                        self.log("未找到目标文本或无后续操作")
+                else:
+                    self.log("OCR识别失败")
+            
+            elif cmdType == "ClickAfterOCR":
+                # 基于OCR结果进行点击
+                if hasattr(self, '_current_ocr_context') and self._current_ocr_context:
+                    base_x = self._current_ocr_context['center_x']
+                    base_y = self._current_ocr_context['center_y']
+                    offset_x = cmdParam.get("x", 0)
+                    offset_y = cmdParam.get("y", 0)
+                    
+                    target_x = base_x + offset_x
+                    target_y = base_y + offset_y
+                    
+                    pyautogui.click(
+                        x=target_x,
+                        y=target_y,
+                        clicks=cmdParam.get("clicks", 1),
+                        interval=cmdParam.get("interval", 0),
+                        button=cmdParam.get("button", "left")
+                    )
+                    self.log(f"基于OCR结果点击位置: ({target_x}, {target_y}) [基准位置: ({base_x}, {base_y}), 偏移: ({offset_x}, {offset_y})]")
+                else:
+                    self.log("错误: ClickAfterOCR命令需要在OCR命令之后执行")
+            
+            elif cmdType == "MoveToAfterOCR":
+                # 基于OCR结果进行鼠标移动
+                if hasattr(self, '_current_ocr_context') and self._current_ocr_context:
+                    base_x = self._current_ocr_context['center_x']
+                    base_y = self._current_ocr_context['center_y']
+                    offset_x = cmdParam.get("x", 0)
+                    offset_y = cmdParam.get("y", 0)
+                    
+                    target_x = base_x + offset_x
+                    target_y = base_y + offset_y
+                    
+                    pyautogui.moveTo(
+                        x=target_x,
+                        y=target_y,
+                        duration=cmdParam.get("duration", 0.25)
+                    )
+                    self.log(f"基于OCR结果移动鼠标到: ({target_x}, {target_y}) [基准位置: ({base_x}, {base_y}), 偏移: ({offset_x}, {offset_y})]")
+                else:
+                    self.log("错误: MoveToAfterOCR命令需要在OCR命令之后执行")
+            
+            elif cmdType == "DragToAfterOCR":
+                # 基于OCR结果进行拖拽
+                if hasattr(self, '_current_ocr_context') and self._current_ocr_context:
+                    base_x = self._current_ocr_context['center_x']
+                    base_y = self._current_ocr_context['center_y']
+                    offset_x = cmdParam.get("x", 0)
+                    offset_y = cmdParam.get("y", 0)
+                    
+                    target_x = base_x + offset_x
+                    target_y = base_y + offset_y
+                    
+                    pyautogui.dragTo(
+                        x=target_x,
+                        y=target_y,
+                        duration=cmdParam.get("duration", 0.25),
+                        button=cmdParam.get("button", "left")
+                    )
+                    self.log(f"基于OCR结果拖拽到: ({target_x}, {target_y}) [基准位置: ({base_x}, {base_y}), 偏移: ({offset_x}, {offset_y})]")
+                else:
+                    self.log("错误: DragToAfterOCR命令需要在OCR命令之后执行")
+            
+            elif cmdType == "ShutDown":
                 timeout = cmdParam.get("timeout", 10)
                 self.log("电脑将在" + str(timeout) + "秒后关机")
                 os.system("shutdown -s -t " + str(timeout))
@@ -300,4 +504,12 @@ class RPACommand:
             if not self.should_stop:
                 if self.interruptible_sleep(0.1):
                     break
-                self.log("等待0.1秒后继续下一次循环") 
+                self.log("等待0.1秒后继续下一次循环")
+    
+    def __del__(self):
+        """析构函数，清理OCR引擎"""
+        if hasattr(self, 'ocr_api') and self.ocr_api:
+            try:
+                self.ocr_api.exit()
+            except:
+                pass 
