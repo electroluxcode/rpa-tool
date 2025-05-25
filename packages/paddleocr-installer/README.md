@@ -1,7 +1,7 @@
 # PaddleOCR-json 安装程序生成工具
 
 这个工具用于将PaddleOCR-json打包成Windows安装程序，并在安装时将程序路径添加到环境变量。
-打包的时候将asset放在对应的文件夹中就可以了
+打包的时候将asset放在对应的文件夹中就可以了，感谢开源大佬
 ref: https://github.com/hiroi-sora/PaddleOCR-json
 
 
