@@ -7,11 +7,14 @@
             "Write",
             "Sleep",
             "Scroll",
-            "SiteFresh",
             "KeyUp",
             "Click",
             "MoveTo",
-            "DragTo"
+            "DragTo",
+            "OCR",
+            "ClickAfterOCR",
+            "MoveToAfterOCR",
+            "DragToAfterOCR"
         ],
         "Cn": [
             "点击图片",
@@ -27,6 +30,35 @@
         ]
     },
     "data": [
+        {
+            "cmdType": "OCR",
+            "cmdParam": {
+                "target": ["File"],
+                "then": [
+                    {
+                        "cmdType": "ClickAfterOCR",
+                        "cmdParam": {
+                            "x": 100,
+                            "y": 100
+                        }
+                    },
+                    {
+                        "cmdType": "MoveToAfterOCR",
+                        "cmdParam": {
+                            "x": 100,
+                            "y": 100
+                        }
+                    },
+                    {
+                        "cmdType": "DragToAfterOCR",
+                        "cmdParam": {
+                            "x": 200,
+                            "y": 100
+                        }
+                    }
+                ]
+            }
+        },
         {
             "cmdType": "Click",
             "cmdParam": {

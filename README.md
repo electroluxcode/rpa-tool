@@ -19,11 +19,12 @@ rpa-tool
 </div>
 
 
-
+## GUI
+<img src="./README.assets/example.png" alt="rpa" style="width: 100%; height: 100%;">
 
 ## Description
 
-支持识图点击，滑动，输入，按键操作等常规操作
+支持识图点击，滑动，输入，按键操作,操作录制等常规操作
 
 一个rpa常用方法的集成库 ，目前支持两个平台
 
@@ -311,6 +312,10 @@ tree /f > list.txt 生成
 
 
 ## update
+
+
+
+2025/05/26 新增OCR识别 + GUI 界面
 
 
 
