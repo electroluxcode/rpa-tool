@@ -5,6 +5,7 @@ from rpa_command import RPACommand
 def command_line_mode():
     """命令行模式"""
     print('Electrolux_PC_RPA欢迎使用')
+    print('提示: 脚本执行时按F10可随时停止')
     
     # 创建RPA命令对象
     rpa_command = RPACommand()
