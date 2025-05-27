@@ -60,7 +60,7 @@ class RPARecorder:
         self.mouse_listener.start()
         self.keyboard_listener.start()
         
-        self.log("开始录制操作...")
+        self.log("开始录制操作... (按F9停止录制)")
         return True
     
     def stop_recording(self):
@@ -202,6 +202,11 @@ class RPARecorder:
         if key == keyboard.Key.f9:
             self.log("检测到F9键，停止录制")
             self.stop_recording()
+            return
+        
+        # 忽略F10键，因为它被用作全局停止热键
+        if key == keyboard.Key.f10:
+            self.log("F10键被保留用于停止脚本执行，不录制此按键")
             return
             
         self.add_sleep_if_needed()

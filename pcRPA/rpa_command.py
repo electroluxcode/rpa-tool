@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import os
 import threading
+from pynput import keyboard
 # 确保 PyScreeze 正确导入
 try:
     import pyscreeze
@@ -30,6 +31,16 @@ except ImportError:
         print("警告: OCR模块导入失败，OCR功能将不可用")
         GetOcrApi = None
 
+# 导入全局热键管理器
+try:
+    from .global_hotkey import global_hotkey_manager
+except ImportError:
+    try:
+        from global_hotkey import global_hotkey_manager
+    except ImportError:
+        print("警告: 全局热键模块导入失败")
+        global_hotkey_manager = None
+
 class RPACommand:
     def __init__(self, callback=None):
         self.callback = callback  # 用于向界面发送状态更新
@@ -38,6 +49,22 @@ class RPACommand:
         self._stop_event = threading.Event()
         self.ocr_api = None
         self._init_ocr()
+        self._setup_global_hotkeys()
+    
+    def _setup_global_hotkeys(self):
+        """设置全局热键"""
+        if global_hotkey_manager:
+            # 注册F10为停止执行热键
+            global_hotkey_manager.register_hotkey(keyboard.Key.f10, self._on_f10_pressed)
+            global_hotkey_manager.start()
+    
+    def _on_f10_pressed(self):
+        """F10按键回调 - 停止脚本执行"""
+        if self.is_running:
+            self.log("检测到F10热键，停止脚本执行")
+            self.stop_execution()
+        else:
+            self.log("当前没有脚本在运行")
     
     def _init_ocr(self):
         """初始化OCR引擎"""
@@ -249,6 +276,7 @@ class RPACommand:
 
     def mainWork(self, allData):
         self.is_running = True
+        self.log("脚本开始执行 (按F10可随时停止)")
         i = 0
         while i < len(allData) and not self.should_stop:
             # 检查停止信号
@@ -507,9 +535,13 @@ class RPACommand:
                 self.log("等待0.1秒后继续下一次循环")
     
     def __del__(self):
-        """析构函数，清理OCR引擎"""
+        """析构函数，清理OCR引擎和全局热键"""
         if hasattr(self, 'ocr_api') and self.ocr_api:
             try:
                 self.ocr_api.exit()
             except:
-                pass 
+                pass
+        
+        # 清理全局热键
+        if global_hotkey_manager:
+            global_hotkey_manager.unregister_hotkey(keyboard.Key.f10) 
