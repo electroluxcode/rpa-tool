@@ -488,28 +488,184 @@ class RPACommand:
                 )
                 self.log(f"鼠标拖拽到 {cmdParam}")
 
-            elif cmdType == "ImgClick":   
-                # 执行图片查找和点击
-                found = self.mouseClick(
-                    1,
-                    cmdParam.get("button","left"),
-                    cmdParam.get("imgPath"),
-                    cmdParam.get("reTry", 1),
-                    cmdParam.get("region")
-                )
-                self.log(f"图片点击操作: {cmdParam}")
+            elif cmdType == "SearchImage":
+                # 搜索图片，设置图片上下文
+                target_images = cmdParam.get("target", [])
+                then_actions = cmdParam.get("then", [])  # 添加then操作支持
+                wait_for_target = cmdParam.get("waitForTarget", False)  # 是否等待目标被发现
+                detect_time = cmdParam.get("detecttime", 0.5)  # 检测间隔时间，默认0.5秒
+                max_wait_time = cmdParam.get("maxWaitTime", 30)  # 最大等待时间，默认30秒
+                region = cmdParam.get("region")  # 搜索区域
                 
-                # 如果找到图片并且有后续操作
-                if found and "thenActions" in cmdParam and not self.should_stop:
-                    self.log("找到图片，执行后续操作")
-                    # 递归执行后续操作（阻塞式）
-                    self.mainWork(cmdParam["thenActions"])
-                    self.log("后续操作执行完毕，继续主流程")
-                elif not found and "elseActions" in cmdParam and not self.should_stop:
-                    self.log("未找到图片，执行替代操作")
-                    # 如果没找到图片，执行替代操作
-                    self.mainWork(cmdParam["elseActions"])
-                    self.log("替代操作执行完毕，继续主流程")
+                self.log(f"开始搜索图片，查找目标图片: {target_images}")
+                if wait_for_target:
+                    self.log(f"等待模式已启用，检测间隔: {detect_time}秒，最大等待时间: {max_wait_time}秒")
+                
+                found_image = None
+                start_time = time.time()
+                
+                while True:
+                    # 检查是否应该停止执行
+                    if self.should_stop:
+                        self.log("图片搜索被中断")
+                        break
+                    
+                    # 进行图片识别
+                    found_image = self.find_image_on_screen(target_images, region)
+                    
+                    if found_image:
+                        self.log(f"找到目标图片 '{found_image['target']}'")
+                        # 设置当前图片结果为上下文，供后续操作使用
+                        self._current_image_context = found_image
+                        break
+                    elif not wait_for_target:
+                        # 如果不是等待模式，一次未找到就退出
+                        self.log("未找到目标图片")
+                        break
+                    else:
+                        # 等待模式：检查是否超时
+                        elapsed_time = time.time() - start_time
+                        if elapsed_time >= max_wait_time:
+                            self.log(f"等待超时({max_wait_time}秒)，未找到目标图片")
+                            break
+                        else:
+                            remaining_time = max_wait_time - elapsed_time
+                            self.log(f"未找到目标图片，{detect_time}秒后重试 (剩余等待时间: {remaining_time:.1f}秒)")
+                            # 可中断的等待
+                            if self.interruptible_sleep(detect_time):
+                                self.log("图片搜索等待被中断")
+                                break
+                
+                # 如果找到目标图片且有后续操作
+                if found_image and then_actions and not self.should_stop:
+                    self.log(f"找到目标图片 '{found_image['target']}'，执行后续操作")
+                    
+                    # 执行后续操作
+                    self.mainWork(then_actions)
+                    
+                    self.log("SearchImage后续操作执行完毕，继续主流程")
+                elif not found_image:
+                    self.log("未找到目标图片，跳过后续操作")
+                elif not then_actions:
+                    self.log("无后续操作需要执行")
+            
+            elif cmdType == "ImgClick":   
+                # 为了向后兼容，保留ImgClick命令，内部转换为SearchImage + ClickAfterImg
+                target_images = cmdParam.get("target", [])
+                then_actions = cmdParam.get("then", [])
+                wait_for_target = cmdParam.get("waitForTarget", False)
+                detect_time = cmdParam.get("detecttime", 0.5)
+                max_wait_time = cmdParam.get("maxWaitTime", 30)
+                region = cmdParam.get("region")
+                
+                # 兼容旧格式：如果没有target参数但有imgPath参数，则转换为新格式
+                if not target_images and "imgPath" in cmdParam:
+                    target_images = [cmdParam["imgPath"]]
+                    self.log("检测到旧格式imgPath参数，已转换为新格式target参数")
+                
+                # 先执行SearchImage操作
+                search_data = [{
+                    "cmdType": "SearchImage",
+                    "cmdParam": {
+                        "target": target_images,
+                        "waitForTarget": wait_for_target,
+                        "detecttime": detect_time,
+                        "maxWaitTime": max_wait_time,
+                        "region": region
+                    }
+                }]
+                
+                # 执行搜索
+                self.mainWork(search_data)
+                
+                # 如果找到图片，执行点击操作
+                if hasattr(self, '_current_image_context') and self._current_image_context:
+                    click_data = [{
+                        "cmdType": "ClickAfterImg", 
+                        "cmdParam": {
+                            "x": 0,
+                            "y": 0,
+                            "clicks": cmdParam.get("clicks", 1),
+                            "button": cmdParam.get("button", "left")
+                        }
+                    }]
+                    
+                    # 执行点击
+                    self.mainWork(click_data)
+                    
+                    # 如果有后续操作，执行它们
+                    if then_actions and not self.should_stop:
+                        self.log("执行ImgClick后续操作")
+                        self.mainWork(then_actions)
+                        self.log("ImgClick后续操作执行完毕")
+                    
+                    # 清理上下文
+                    self._current_image_context = None
+                else:
+                    self.log("ImgClick: 未找到目标图片，跳过点击操作")
+            
+            elif cmdType == "ClickAfterImg":
+                # 基于图片结果进行点击
+                if hasattr(self, '_current_image_context') and self._current_image_context:
+                    base_x = self._current_image_context['center_x']
+                    base_y = self._current_image_context['center_y']
+                    offset_x = cmdParam.get("x", 0)
+                    offset_y = cmdParam.get("y", 0)
+                    
+                    target_x = base_x + offset_x
+                    target_y = base_y + offset_y
+                    
+                    pyautogui.click(
+                        x=target_x,
+                        y=target_y,
+                        clicks=cmdParam.get("clicks", 1),
+                        interval=cmdParam.get("interval", 0),
+                        button=cmdParam.get("button", "left")
+                    )
+                    self.log(f"基于图片结果点击位置: ({target_x}, {target_y}) [基准位置: ({base_x}, {base_y}), 偏移: ({offset_x}, {offset_y})]")
+                else:
+                    self.log("错误: ClickAfterImg命令需要在ImgClick命令之后执行")
+            
+            elif cmdType == "MoveToAfterImg":
+                # 基于图片结果进行鼠标移动
+                if hasattr(self, '_current_image_context') and self._current_image_context:
+                    base_x = self._current_image_context['center_x']
+                    base_y = self._current_image_context['center_y']
+                    offset_x = cmdParam.get("x", 0)
+                    offset_y = cmdParam.get("y", 0)
+                    
+                    target_x = base_x + offset_x
+                    target_y = base_y + offset_y
+                    
+                    pyautogui.moveTo(
+                        x=target_x,
+                        y=target_y,
+                        duration=cmdParam.get("duration", 0.25)
+                    )
+                    self.log(f"基于图片结果移动鼠标到: ({target_x}, {target_y}) [基准位置: ({base_x}, {base_y}), 偏移: ({offset_x}, {offset_y})]")
+                else:
+                    self.log("错误: MoveToAfterImg命令需要在ImgClick命令之后执行")
+            
+            elif cmdType == "DragToAfterImg":
+                # 基于图片结果进行拖拽
+                if hasattr(self, '_current_image_context') and self._current_image_context:
+                    base_x = self._current_image_context['center_x']
+                    base_y = self._current_image_context['center_y']
+                    offset_x = cmdParam.get("x", 0)
+                    offset_y = cmdParam.get("y", 0)
+                    
+                    target_x = base_x + offset_x
+                    target_y = base_y + offset_y
+                    
+                    pyautogui.dragTo(
+                        x=target_x,
+                        y=target_y,
+                        duration=cmdParam.get("duration", 0.25),
+                        button=cmdParam.get("button", "left")
+                    )
+                    self.log(f"基于图片结果拖拽到: ({target_x}, {target_y}) [基准位置: ({base_x}, {base_y}), 偏移: ({offset_x}, {offset_y})]")
+                else:
+                    self.log("错误: DragToAfterImg命令需要在ImgClick命令之后执行")
             
             elif cmdType == "Write":
                 pyautogui.write(
@@ -664,3 +820,64 @@ class RPACommand:
         # 清理全局热键
         if global_hotkey_manager:
             global_hotkey_manager.unregister_hotkey(keyboard.Key.f10) 
+
+    def find_image_on_screen(self, target_images, region=None):
+        """在屏幕上查找目标图片"""
+        if not target_images:
+            self.log("错误: 没有指定目标图片")
+            return None
+            
+        # 设置查找区域
+        if region:
+            # 获取屏幕尺寸
+            screen_width, screen_height = pyautogui.size()
+            
+            # 预定义区域
+            if region == 'left':
+                search_region = (0, 0, screen_width//2, screen_height)
+            elif region == 'right':
+                search_region = (screen_width//2, 0, screen_width//2, screen_height)
+            elif region == 'top':
+                search_region = (0, 0, screen_width, screen_height//2)
+            elif region == 'bottom':
+                search_region = (0, screen_height//2, screen_width, screen_height//2)
+            # 添加四个角落区域
+            elif region == 'left_top' or region == 'top_left':
+                search_region = (0, 0, screen_width//2, screen_height//2)
+            elif region == 'right_top' or region == 'top_right':
+                search_region = (screen_width//2, 0, screen_width//2, screen_height//2)
+            elif region == 'left_bottom' or region == 'bottom_left':
+                search_region = (0, screen_height//2, screen_width//2, screen_height//2)
+            elif region == 'right_bottom' or region == 'bottom_right':
+                search_region = (screen_width//2, screen_height//2, screen_width//2, screen_height//2)
+            # 添加中间区域
+            elif region == 'center':
+                quarter_width = screen_width//4
+                quarter_height = screen_height//4
+                search_region = (quarter_width, quarter_height, quarter_width*2, quarter_height*2)
+            # 自定义区域
+            elif isinstance(region, list) and len(region) == 4:
+                search_region = tuple(region)  # 自定义区域 [x, y, width, height]
+            else:
+                search_region = None
+                self.log(f"无效的区域参数: {region}，将在全屏查找")
+        else:
+            search_region = None
+        
+        # 尝试查找每个目标图片
+        for target_image in target_images:
+            self.log(f"正在查找图片: {target_image}")
+            try:
+                location = pyautogui.locateCenterOnScreen(target_image, confidence=0.7, region=search_region)
+                if location is not None:
+                    self.log(f"找到目标图片 '{target_image}' 在位置: ({location.x}, {location.y})")
+                    return {
+                        "target": target_image,
+                        "center_x": location.x,
+                        "center_y": location.y,
+                        "found": True
+                    }
+            except Exception as e:
+                self.log(f"查找图片 '{target_image}' 时出错: {str(e)}")
+        
+        return None 

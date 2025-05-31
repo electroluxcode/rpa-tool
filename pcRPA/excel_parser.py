@@ -13,7 +13,8 @@ class ExcelParser:
         self.supported_cmd_types = [
             "Click", "MoveTo", "DragTo", "ImgClick", "Write", "ChineseWrite",
             "Sleep", "Scroll", "KeyDown", "KeyUp", "Press", "ShutDown",
-            "OCR", "ClickAfterOCR", "MoveToAfterOCR", "DragToAfterOCR"
+            "OCR", "ClickAfterOCR", "MoveToAfterOCR", "DragToAfterOCR",
+            "SearchImage", "ClickAfterImg", "MoveToAfterImg", "DragToAfterImg"
         ]
     
     def excel_to_json(self, excel_file_path, output_json_path=None):
@@ -100,16 +101,25 @@ class ExcelParser:
         if pd.isna(param_str) or param_str == '' or param_str == 'nan':
             param_str = '{}'
         
-        # 清理Excel单元格中的换行符和其他空白字符，但保留JSON结构
-        param_str = str(param_str).replace('\r', '').strip()
+        # 转换为字符串并进行初步清理
+        param_str = str(param_str).strip()
         
-        # 对于JSON格式，更智能地处理换行符
+        # 处理三引号字符串格式 - 移除三引号标记
+        if param_str.startswith("'''") and param_str.endswith("'''"):
+            param_str = param_str[3:-3].strip()
+        elif param_str.startswith('"""') and param_str.endswith('"""'):
+            param_str = param_str[3:-3].strip()
+        
+        # 对于JSON格式，智能处理换行符和空白字符
         if param_str.startswith('{') and param_str.endswith('}'):
-            # 对于JSON格式，只清理不必要的换行符，保留JSON结构
-            param_str = ' '.join(param_str.split())  # 将多个空白字符（包括换行符）替换为单个空格
+            # 对于多行JSON，保留结构但规范化空白字符
+            # 移除Excel单元格中的\r字符，但保留\n用于JSON结构
+            param_str = param_str.replace('\r', '')
+            # 不要简单地移除所有\n，因为这会破坏多行JSON的可读性
+            # 只在必要时进行JSON压缩
         else:
-            # 对于非JSON格式，直接清理换行符
-            param_str = param_str.replace('\n', '')
+            # 对于非JSON格式，清理所有换行符
+            param_str = param_str.replace('\r', '').replace('\n', ' ').strip()
         
         # 如果清理后为空，设置默认值
         if not param_str:
@@ -122,7 +132,7 @@ class ExcelParser:
                     return json.loads(param_str)
                 except json.JSONDecodeError as e:
                     print(f"警告: 第{row_num}行JSON解析失败: {str(e)}")
-                    print(f"原始参数: {repr(param_str)}")
+                    print(f"原始参数: {repr(param_str[:200])}...")  # 只显示前200个字符
                     # JSON解析失败时，尝试修复常见问题
                     fixed_param = self._try_fix_json(param_str)
                     if fixed_param:
@@ -165,13 +175,123 @@ class ExcelParser:
                         except ValueError:
                             pass
             
+            elif cmd_type == "SearchImage":
+                # 图片搜索参数，支持新的target格式
+                if param_str.startswith('[') and param_str.endswith(']'):
+                    # 简单的target数组格式: ["button.jpg", "button_alt.jpg"]
+                    try:
+                        target_list = json.loads(param_str)
+                        return {
+                            "target": target_list,
+                            "waitForTarget": False,
+                            "detecttime": 0.5,
+                            "maxWaitTime": 30
+                        }
+                    except json.JSONDecodeError:
+                        # 解析失败，作为简单文本处理
+                        return {
+                            "target": [param_str],
+                            "waitForTarget": False,
+                            "detecttime": 0.5,
+                            "maxWaitTime": 30
+                        }
+                elif param_str.startswith('{') and param_str.endswith('}'):
+                    # 完整的JSON格式，直接解析
+                    try:
+                        search_params = json.loads(param_str)
+                        # 确保包含默认值
+                        if "waitForTarget" not in search_params:
+                            search_params["waitForTarget"] = False
+                        if "detecttime" not in search_params:
+                            search_params["detecttime"] = 0.5
+                        if "maxWaitTime" not in search_params:
+                            search_params["maxWaitTime"] = 30
+                        return search_params
+                    except json.JSONDecodeError:
+                        # JSON解析失败，作为简单文本处理
+                        return {
+                            "target": [param_str],
+                            "waitForTarget": False,
+                            "detecttime": 0.5,
+                            "maxWaitTime": 30
+                        }
+                else:
+                    # 简单文本格式，单个图片路径
+                    return {
+                        "target": [param_str],
+                        "waitForTarget": False,
+                        "detecttime": 0.5,
+                        "maxWaitTime": 30
+                    }
+            
             elif cmd_type == "ImgClick":
-                # 图片点击参数
-                return {
-                    "imgPath": param_str,
-                    "button": "left",
-                    "reTry": 1
-                }
+                # 图片点击参数，支持新的target格式和旧的imgPath格式
+                if param_str.startswith('[') and param_str.endswith(']'):
+                    # 简单的target数组格式: ["button.jpg", "button_alt.jpg"]
+                    try:
+                        target_list = json.loads(param_str)
+                        return {
+                            "target": target_list,
+                            "waitForTarget": False,
+                            "detecttime": 0.5,
+                            "maxWaitTime": 30,
+                            "clicks": 1,
+                            "button": "left",
+                            "then": []
+                        }
+                    except json.JSONDecodeError:
+                        # 解析失败，作为旧格式处理
+                        return {
+                            "imgPath": param_str,
+                            "button": "left",
+                            "reTry": 1
+                        }
+                elif param_str.startswith('{') and param_str.endswith('}'):
+                    # 完整的JSON格式，直接解析
+                    try:
+                        img_params = json.loads(param_str)
+                        # 如果包含target参数，则使用新格式
+                        if "target" in img_params:
+                            # 确保包含默认值
+                            if "waitForTarget" not in img_params:
+                                img_params["waitForTarget"] = False
+                            if "detecttime" not in img_params:
+                                img_params["detecttime"] = 0.5
+                            if "maxWaitTime" not in img_params:
+                                img_params["maxWaitTime"] = 30
+                            if "clicks" not in img_params:
+                                img_params["clicks"] = 1
+                            if "button" not in img_params:
+                                img_params["button"] = "left"
+                            if "then" not in img_params:
+                                img_params["then"] = []
+                            return img_params
+                        else:
+                            # 旧格式，包含imgPath参数
+                            if "button" not in img_params:
+                                img_params["button"] = "left"
+                            if "reTry" not in img_params:
+                                img_params["reTry"] = 1
+                            return img_params
+                    except json.JSONDecodeError:
+                        # JSON解析失败，作为简单文本处理（旧格式）
+                        return {
+                            "imgPath": param_str,
+                            "button": "left",
+                            "reTry": 1
+                        }
+                else:
+                    # 简单文本格式，可能是图片路径或新格式target
+                    # 优先使用新格式
+                    return {
+                        "target": [param_str],
+                        "waitForTarget": False,
+                        "detecttime": 0.5,
+                        "maxWaitTime": 30,
+                        "clicks": 1,
+                        "button": "left",
+                        "then": []
+                    }
             
             elif cmd_type == "Write":
                 return {
@@ -241,6 +361,27 @@ class ExcelParser:
                         "maxWaitTime": 30
                     }
             
+            elif cmd_type in ["ClickAfterImg", "MoveToAfterImg", "DragToAfterImg"]:
+                # 解析基于图片的偏移坐标
+                if ',' in param_str:
+                    parts = param_str.split(',')
+                    if len(parts) >= 2:
+                        try:
+                            x = int(parts[0].split(':')[-1].strip())
+                            y = int(parts[1].split(':')[-1].strip())
+                            result = {"x": x, "y": y}
+                            
+                            if cmd_type == "ClickAfterImg":
+                                result.update({"clicks": 1, "interval": 0, "button": "left"})
+                            elif cmd_type in ["MoveToAfterImg", "DragToAfterImg"]:
+                                result.update({"duration": 0.25})
+                                if cmd_type == "DragToAfterImg":
+                                    result.update({"button": "left"})
+                            
+                            return result
+                        except ValueError:
+                            pass
+            
             elif cmd_type in ["ClickAfterOCR", "MoveToAfterOCR", "DragToAfterOCR"]:
                 # 解析偏移坐标
                 if ',' in param_str:
@@ -302,7 +443,7 @@ class ExcelParser:
             template_data = [
                 {
                     "cmdType": "Click",
-                    "cmdParam": '{"x": 100, "y": 200, "clicks": 1, "button": "left"}',
+                    "cmdParam": '''{"x": 100, "y": 200, "clicks": 1, "button": "left"}''',
                     "说明": "点击坐标(100,200)"
                 },
                 {
@@ -312,7 +453,7 @@ class ExcelParser:
                 },
                 {
                     "cmdType": "Write",
-                    "cmdParam": '{"message": "Hello World", "interval": 0.01}',
+                    "cmdParam": '''{"message": "Hello World", "interval": 0.01}''',
                     "说明": "输入文本"
                 },
                 {
@@ -322,13 +463,24 @@ class ExcelParser:
                 },
                 {
                     "cmdType": "Press",
-                    "cmdParam": '{"keys": "enter", "presses": 1}',
+                    "cmdParam": '''{"keys": "enter", "presses": 1}''',
                     "说明": "按回车键"
                 },
                 {
-                    "cmdType": "ImgClick",
-                    "cmdParam": '{"imgPath": "button.jpg", "button": "left", "reTry": 3}',
-                    "说明": "点击图片按钮"
+                    "cmdType": "SearchImage",
+                    "cmdParam": '''{
+    "target": ["test.png"],
+    "waitForTarget": true,
+    "detecttime": 0.5,
+    "maxWaitTime": 30,
+    "then": [
+        {
+            "cmdType": "ClickAfterImg",
+            "cmdParam": {"x": 0, "y": 0}
+        }
+    ]
+}''',
+                    "说明": "搜索图片"
                 },
                 {
                     "cmdType": "Scroll",
@@ -337,44 +489,58 @@ class ExcelParser:
                 },
                 {
                     "cmdType": "MoveTo",
-                    "cmdParam": '{"x": 300, "y": 400, "duration": 0.5}',
+                    "cmdParam": '''{"x": 300, "y": 400, "duration": 0.5}''',
                     "说明": "移动鼠标到指定位置"
                 },
                 {
                     "cmdType": "DragTo",
-                    "cmdParam": '{"x": 500, "y": 600, "duration": 1.0, "button": "left"}',
+                    "cmdParam": '''{"x": 500, "y": 600, "duration": 1.0, "button": "left"}''',
                     "说明": "拖拽到指定位置"
                 },
                 {
                     "cmdType": "OCR",
-                    # 分行显示
-                    "cmdParam": json_to_string({
-                        "target": ["File", "文件"], 
-                        "waitForTarget": True, 
-                        "detecttime": 0.5, 
-                        "maxWaitTime": 30, 
-                        "then": [
-                            {
-                                "cmdType": "ClickAfterOCR", 
-                                "cmdParam": {"x": 10, "y": 20}
-                            }
-                        ]
-                     }),
+                    "cmdParam": '''{
+    "target": ["File", "文件"], 
+    "waitForTarget": true, 
+    "detecttime": 0.5, 
+    "maxWaitTime": 30, 
+    "then": [
+        {
+            "cmdType": "ClickAfterOCR", 
+            "cmdParam": {"x": 10, "y": 20}
+        }
+    ]
+}''',
                     "说明": "OCR等待检测模式：持续检测直到找到目标文本"
                     },
                 {
                     "cmdType": "OCR", 
-                    "cmdParam": json_to_string({
-                        "target": ["确定", "OK"], 
-                        "waitForTarget": False, 
-                        "then": [
-                            {
-                                "cmdType": "ClickAfterOCR", 
-                                "cmdParam": {"x": 0, "y": 0}
-                            }
-                        ]
-                    }),
+                    "cmdParam": '''{
+    "target": ["确定", "OK"], 
+    "waitForTarget": false, 
+    "then": [
+        {
+            "cmdType": "ClickAfterOCR", 
+            "cmdParam": {"x": 0, "y": 0}
+        }
+    ]
+}''',
                     "说明": "OCR单次检测模式：检测一次后继续"
+                },
+                {
+                    "cmdType": "ClickAfterImg",
+                    "cmdParam": '''{"x": 0, "y": 0, "clicks": 1, "button": "left"}''',
+                    "说明": "基于找到的图片进行点击"
+                },
+                {
+                    "cmdType": "ImgClick",
+                    "cmdParam": '''{
+    "target": ["test.jpg"], 
+    "waitForTarget": true, 
+    "detecttime": 0.5, 
+    "maxWaitTime": 30
+}''',
+                    "说明": "点击图片按钮(兼容模式)"
                 },
             ]
             
@@ -385,13 +551,21 @@ class ExcelParser:
             with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
                 df.to_excel(writer, sheet_name='RPA命令', index=False)
                 
-                # 获取工作表对象以设置列宽
+                # 获取工作表对象以设置列宽和行高
                 worksheet = writer.sheets['RPA命令']
                 worksheet.column_dimensions['A'].width = 15  # cmdType列
-                worksheet.column_dimensions['B'].width = 80  # cmdParam列 - 增加宽度以容纳复杂JSON
-                worksheet.column_dimensions['C'].width = 30  # 说明列
+                worksheet.column_dimensions['B'].width = 100  # cmdParam列 - 增加宽度以容纳多行JSON
+                worksheet.column_dimensions['C'].width = 35  # 说明列
+                
+                
+                # 设置文本换行
+                from openpyxl.styles import Alignment
+                for row_num in range(2, len(template_data) + 2):
+                    cell = worksheet[f'B{row_num}']  # cmdParam列
+                    cell.alignment = Alignment(wrap_text=True, vertical='top')
             
             print(f"✅ Excel模板已创建: {output_path}")
+            print("📝 复杂的JSON参数已格式化为多行显示，提高可读性")
             return output_path
             
         except Exception as e:
