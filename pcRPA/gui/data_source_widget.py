@@ -27,7 +27,8 @@ class DataSourceWidget(QGroupBox):
         self.setFont(QFont("Microsoft YaHei", 12, QFont.Bold))
         self.current_data = None
         self.init_ui()
-        self.load_default_data()
+        # 将默认数据加载移到最后，确保所有UI元素都已初始化
+        # 注意：实际的data_changed信号触发需要在父控件连接后进行
         
     def init_ui(self):
         layout = QVBoxLayout(self)
@@ -313,8 +314,12 @@ class DataSourceWidget(QGroupBox):
         try:
             if os.path.exists('pcRPAResouece.json'):
                 with open('pcRPAResouece.json', encoding='UTF-8') as f:
-                    default_json = json.load(f)
+                    existing_data = json.load(f)
+                    # 只有当文件存在且有有效数据时才使用，否则使用默认的简单Click命令
+                    if existing_data and "data" in existing_data and existing_data["data"]:
+                        default_json = existing_data
         except:
+            # 如果读取配置文件失败，使用默认的简单Click命令
             pass
         
         self.load_json_data(default_json)
@@ -531,6 +536,9 @@ class DataSourceWidget(QGroupBox):
         formatted_json = json.dumps(data, ensure_ascii=False, indent=2)
         self.json_editor.setPlainText(formatted_json)
         
+        # 触发数据变更信号，确保执行组件能接收到数据
+        self.data_changed.emit(data)
+        
         # 更新预览表格（如果当前在预览标签页）
         if self.tab_widget.currentIndex() == 2:
             self.update_preview_table()
@@ -589,3 +597,7 @@ class DataSourceWidget(QGroupBox):
     def get_current_data(self):
         """获取当前JSON数据"""
         return self.current_data 
+
+    def initialize_default_data(self):
+        """初始化默认数据 - 由父控件在建立连接后调用"""
+        self.load_default_data() 

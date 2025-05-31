@@ -6,15 +6,13 @@
     "data": [
         {
             "cmdType": "Sleep",
-            "cmdParam": 2
+            "cmdParam": 4
         },
         {
-            "cmdType": "Click",
+            "cmdType": "ShutDown",
             "cmdParam": {
-                "x": 100,
-                "y": 100
+                "timeout": 7200
             }
         }
-        
     ]
 }

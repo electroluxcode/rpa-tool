@@ -133,11 +133,28 @@ class ExecutionWidget(QGroupBox):
     def set_data(self, data):
         """设置执行数据"""
         self.current_data = data
+        # 添加日志确认数据接收
+        if data and "data" in data:
+            cmd_count = len(data["data"])
+            self.log_signal.emit(f"📊 已接收执行数据: {cmd_count} 个命令")
+        else:
+            self.log_signal.emit("❌ 接收到无效的执行数据")
     
     def start_execution(self):
         """开始执行"""
-        if not self.current_data or "data" not in self.current_data:
-            QMessageBox.warning(self, "执行错误", "没有有效的执行数据")
+        if not self.current_data:
+            QMessageBox.warning(self, "执行错误", "没有设置执行数据，请先加载或编辑JSON数据")
+            self.log_signal.emit("❌ 没有设置执行数据")
+            return
+            
+        if "data" not in self.current_data:
+            QMessageBox.warning(self, "执行错误", "执行数据格式错误，缺少'data'字段")
+            self.log_signal.emit("❌ 执行数据格式错误，缺少'data'字段")
+            return
+        
+        if not self.current_data["data"]:
+            QMessageBox.warning(self, "执行错误", "执行数据为空，没有可执行的命令")
+            self.log_signal.emit("❌ 执行数据为空")
             return
         
         try:
@@ -147,6 +164,10 @@ class ExecutionWidget(QGroupBox):
             # 确定执行模式
             is_loop = self.loop_radio.isChecked()
             mode_text = "循环执行" if is_loop else "单次执行"
+            
+            # 输出执行信息
+            cmd_count = len(self.current_data["data"])
+            self.log_signal.emit(f"🚀 准备执行 {cmd_count} 个命令 ({mode_text})")
             
             # 创建工作线程
             self.worker_thread = RPAWorkerThread(
