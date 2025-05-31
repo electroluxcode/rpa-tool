@@ -290,7 +290,6 @@ class DataSourceWidget(QGroupBox):
             }}
             QPushButton:pressed {{
                 background-color: {hover_color};
-                transform: translateY(1px);
             }}
         """
     

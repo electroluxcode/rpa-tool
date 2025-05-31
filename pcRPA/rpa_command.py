@@ -303,32 +303,85 @@ class RPACommand:
                 # 执行OCR识别和后续操作
                 target_texts = cmdParam.get("target", [])
                 then_actions = cmdParam.get("then", [])
+                wait_for_target = cmdParam.get("waitForTarget", False)  # 是否等待目标被发现
+                detect_time = cmdParam.get("detecttime", 0.5)  # 检测间隔时间，默认0.5秒
+                max_wait_time = cmdParam.get("maxWaitTime", 30)  # 最大等待时间，默认30秒
                 
                 self.log(f"开始OCR识别，查找目标文本: {target_texts}")
+                if wait_for_target:
+                    self.log(f"等待模式已启用，检测间隔: {detect_time}秒，最大等待时间: {max_wait_time}秒")
                 
-                # 进行OCR识别
-                ocr_results = self._perform_ocr_on_screen()
-                if ocr_results:
-                    # 查找目标文本
-                    found_text = self._find_text_in_ocr_results(ocr_results, target_texts)
+                found_text = None
+                start_time = time.time()
+                
+                while True:
+                    # 检查是否应该停止执行
+                    if self.should_stop:
+                        self.log("OCR检测被中断")
+                        break
                     
-                    if found_text and then_actions and not self.should_stop:
-                        self.log(f"找到目标文本 '{found_text['target']}'，执行后续操作")
+                    # 进行OCR识别
+                    ocr_results = self._perform_ocr_on_screen()
+                    if ocr_results:
+                        # 查找目标文本
+                        found_text = self._find_text_in_ocr_results(ocr_results, target_texts)
                         
-                        # 设置当前OCR结果为上下文，供后续操作使用
-                        self._current_ocr_context = found_text
-                        
-                        # 执行后续操作
-                        self.mainWork(then_actions)
-                        
-                        # 清理上下文
-                        self._current_ocr_context = None
-                        
-                        self.log("OCR后续操作执行完毕，继续主流程")
+                        if found_text:
+                            self.log(f"找到目标文本 '{found_text['target']}'")
+                            break
+                        elif not wait_for_target:
+                            # 如果不是等待模式，一次未找到就退出
+                            self.log("未找到目标文本")
+                            break
+                        else:
+                            # 等待模式：检查是否超时
+                            elapsed_time = time.time() - start_time
+                            if elapsed_time >= max_wait_time:
+                                self.log(f"等待超时({max_wait_time}秒)，未找到目标文本")
+                                break
+                            else:
+                                remaining_time = max_wait_time - elapsed_time
+                                self.log(f"未找到目标文本，{detect_time}秒后重试 (剩余等待时间: {remaining_time:.1f}秒)")
+                                # 可中断的等待
+                                if self.interruptible_sleep(detect_time):
+                                    self.log("OCR等待被中断")
+                                    break
                     else:
-                        self.log("未找到目标文本或无后续操作")
-                else:
-                    self.log("OCR识别失败")
+                        self.log("OCR识别失败")
+                        if not wait_for_target:
+                            break
+                        else:
+                            # 等待模式：检查是否超时
+                            elapsed_time = time.time() - start_time
+                            if elapsed_time >= max_wait_time:
+                                self.log(f"等待超时({max_wait_time}秒)，OCR识别持续失败")
+                                break
+                            else:
+                                remaining_time = max_wait_time - elapsed_time
+                                self.log(f"OCR识别失败，{detect_time}秒后重试 (剩余等待时间: {remaining_time:.1f}秒)")
+                                # 可中断的等待
+                                if self.interruptible_sleep(detect_time):
+                                    self.log("OCR等待被中断")
+                                    break
+                
+                # 如果找到目标文本且有后续操作
+                if found_text and then_actions and not self.should_stop:
+                    self.log(f"找到目标文本 '{found_text['target']}'，执行后续操作")
+                    
+                    # 设置当前OCR结果为上下文，供后续操作使用
+                    self._current_ocr_context = found_text
+                    
+                    # 执行后续操作
+                    self.mainWork(then_actions)
+                    
+                    # 清理上下文
+                    self._current_ocr_context = None
+                    
+                    self.log("OCR后续操作执行完毕，继续主流程")
+                elif not found_text:
+                    self.log("未找到目标文本，跳过后续操作")
+                elif not then_actions:
+                    self.log("无后续操作需要执行")
             
             elif cmdType == "ClickAfterOCR":
                 # 基于OCR结果进行点击

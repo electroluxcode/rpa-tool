@@ -3,6 +3,11 @@ import json
 import os
 from datetime import datetime
 
+
+# JSON转换工具函数
+def json_to_string(json_obj):
+    """将JSON对象转换为紧凑的字符串格式，用于Excel中的cmdParam字段"""
+    return json.dumps(json_obj, ensure_ascii=False, separators=(',', ':'))
 class ExcelParser:
     def __init__(self):
         self.supported_cmd_types = [
@@ -194,10 +199,47 @@ class ExcelParser:
             elif cmd_type == "OCR":
                 # OCR参数需要特殊处理
                 if param_str.startswith('[') and param_str.endswith(']'):
+                    # 简单的target数组格式: ["File", "文件"]
                     target_list = json.loads(param_str)
-                    return {"target": target_list, "then": []}
+                    return {
+                        "target": target_list, 
+                        "then": [],
+                        "waitForTarget": False,
+                        "detecttime": 0.5,
+                        "maxWaitTime": 30
+                    }
+                elif param_str.startswith('{') and param_str.endswith('}'):
+                    # 完整的JSON格式，直接解析
+                    try:
+                        ocr_params = json.loads(param_str)
+                        # 确保包含默认值
+                        if "waitForTarget" not in ocr_params:
+                            ocr_params["waitForTarget"] = False
+                        if "detecttime" not in ocr_params:
+                            ocr_params["detecttime"] = 0.5
+                        if "maxWaitTime" not in ocr_params:
+                            ocr_params["maxWaitTime"] = 30
+                        if "then" not in ocr_params:
+                            ocr_params["then"] = []
+                        return ocr_params
+                    except json.JSONDecodeError:
+                        # JSON解析失败，作为简单文本处理
+                        return {
+                            "target": [param_str], 
+                            "then": [],
+                            "waitForTarget": False,
+                            "detecttime": 0.5,
+                            "maxWaitTime": 30
+                        }
                 else:
-                    return {"target": [param_str], "then": []}
+                    # 简单文本格式
+                    return {
+                        "target": [param_str], 
+                        "then": [],
+                        "waitForTarget": False,
+                        "detecttime": 0.5,
+                        "maxWaitTime": 30
+                    }
             
             elif cmd_type in ["ClickAfterOCR", "MoveToAfterOCR", "DragToAfterOCR"]:
                 # 解析偏移坐标
@@ -305,14 +347,35 @@ class ExcelParser:
                 },
                 {
                     "cmdType": "OCR",
-                    "cmdParam": '{"target": ["File", "文件"], "then": [{"cmdType": "ClickAfterOCR", "cmdParam": {"x": 10, "y": 20}}]}',
-                    "说明": "OCR识别文本并执行后续操作"
-                },
+                    # 分行显示
+                    "cmdParam": json_to_string({
+                        "target": ["File", "文件"], 
+                        "waitForTarget": True, 
+                        "detecttime": 0.5, 
+                        "maxWaitTime": 30, 
+                        "then": [
+                            {
+                                "cmdType": "ClickAfterOCR", 
+                                "cmdParam": {"x": 10, "y": 20}
+                            }
+                        ]
+                     }),
+                    "说明": "OCR等待检测模式：持续检测直到找到目标文本"
+                    },
                 {
-                    "cmdType": "ClickAfterOCR",
-                    "cmdParam": '{"x": 10, "y": 20, "clicks": 1, "button": "left"}',
-                    "说明": "基于OCR结果点击(相对偏移)"
-                }
+                    "cmdType": "OCR", 
+                    "cmdParam": json_to_string({
+                        "target": ["确定", "OK"], 
+                        "waitForTarget": False, 
+                        "then": [
+                            {
+                                "cmdType": "ClickAfterOCR", 
+                                "cmdParam": {"x": 0, "y": 0}
+                            }
+                        ]
+                    }),
+                    "说明": "OCR单次检测模式：检测一次后继续"
+                },
             ]
             
             # 创建DataFrame
