@@ -42,6 +42,8 @@ pip install python-socketio eventlet -i http://mirrors.aliyun.com/pypi/simple --
 
 pip install pypiwin32   socketio eventlet  -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
 
+
+pip install pandas -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
 python pcRPA.py  
 ```
 

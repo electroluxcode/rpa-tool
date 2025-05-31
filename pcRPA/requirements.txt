@@ -1,0 +1,25 @@
+# RPA工具依赖项
+
+# 核心功能
+pyautogui>=0.9.54
+pynput>=1.7.6
+pyperclip>=1.8.2
+
+# 图像处理
+opencv-python>=4.8.0
+numpy>=1.24.0
+Pillow>=10.0.0
+pyscreeze>=0.1.29
+
+# Excel解析功能
+pandas>=2.0.0
+openpyxl>=3.1.0
+
+# GUI界面 (可选)
+PyQt5>=5.15.0
+
+# OCR功能 (可选)
+# PaddleOCR相关依赖需要单独安装
+
+# 其他工具
+requests>=2.31.0 

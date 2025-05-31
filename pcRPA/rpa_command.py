@@ -41,6 +41,16 @@ except ImportError:
         print("警告: 全局热键模块导入失败")
         global_hotkey_manager = None
 
+# 导入Excel解析器
+try:
+    from .excel_parser import excel_parser
+except ImportError:
+    try:
+        from excel_parser import excel_parser
+    except ImportError:
+        print("警告: Excel解析模块导入失败，Excel功能将不可用")
+        excel_parser = None
+
 class RPACommand:
     def __init__(self, callback=None):
         self.callback = callback  # 用于向界面发送状态更新
@@ -533,6 +543,62 @@ class RPACommand:
                 if self.interruptible_sleep(0.1):
                     break
                 self.log("等待0.1秒后继续下一次循环")
+    
+    def load_excel_file(self, excel_file_path):
+        """加载Excel文件并转换为JSON格式"""
+        if not excel_parser:
+            self.log("错误: Excel解析模块不可用")
+            return None
+        
+        try:
+            self.log(f"正在加载Excel文件: {excel_file_path}")
+            
+            # 验证Excel文件格式
+            is_valid, message = excel_parser.validate_excel_format(excel_file_path)
+            if not is_valid:
+                self.log(f"Excel文件格式验证失败: {message}")
+                return None
+            
+            self.log(f"Excel文件格式验证通过: {message}")
+            
+            # 转换Excel为JSON
+            json_data = excel_parser.excel_to_json(excel_file_path)
+            
+            self.log(f"Excel文件加载成功，包含 {len(json_data['data'])} 个命令")
+            return json_data
+            
+        except Exception as e:
+            self.log(f"加载Excel文件失败: {str(e)}")
+            return None
+    
+    def execute_excel_once(self, excel_file_path):
+        """从Excel文件执行一次"""
+        json_data = self.load_excel_file(excel_file_path)
+        if json_data:
+            self.execute_once(json_data["data"])
+        else:
+            self.log("无法执行Excel文件：加载失败")
+    
+    def execute_excel_loop(self, excel_file_path):
+        """从Excel文件循环执行"""
+        json_data = self.load_excel_file(excel_file_path)
+        if json_data:
+            self.execute_loop(json_data["data"])
+        else:
+            self.log("无法执行Excel文件：加载失败")
+    
+    @staticmethod
+    def create_excel_template(output_path="rpa_template.xlsx"):
+        """创建Excel模板文件"""
+        if not excel_parser:
+            print("错误: Excel解析模块不可用")
+            return None
+        
+        try:
+            return excel_parser.create_excel_template(output_path)
+        except Exception as e:
+            print(f"创建Excel模板失败: {str(e)}")
+            return None
     
     def __del__(self):
         """析构函数，清理OCR引擎和全局热键"""

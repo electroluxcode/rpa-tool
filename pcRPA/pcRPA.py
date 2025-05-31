@@ -1,5 +1,6 @@
 import sys
 import json
+import os
 from rpa_command import RPACommand
 
 def command_line_mode():
@@ -10,25 +11,74 @@ def command_line_mode():
     # 创建RPA命令对象
     rpa_command = RPACommand()
     
-    # 加载数据
-    try:
-        with open('pcRPAResouece.json', encoding='UTF-8') as f:
-            allDataA = json.load(f)
-    except FileNotFoundError:
-        print("错误: 找不到 pcRPAResouece.json 文件")
-        return
-    except json.JSONDecodeError:
-        print("错误: JSON文件格式不正确")
-        return
-    
     # 选择功能
-    key = input('选择功能: 1.做一次 2.循环到死 3.启动GUI界面\n')
+    print('选择功能:')
+    print('1. 从JSON文件执行一次')
+    print('2. 从JSON文件循环执行')
+    print('3. 从Excel文件执行一次')
+    print('4. 从Excel文件循环执行')
+    print('5. 创建Excel模板')
+    print('6. 启动GUI界面')
+    
+    key = input('请输入选项 (1-6): ')
     
     if key == '1':
-        rpa_command.execute_once(allDataA["data"])
+        # 从JSON文件执行一次
+        try:
+            with open('pcRPAResouece.json', encoding='UTF-8') as f:
+                allDataA = json.load(f)
+            rpa_command.execute_once(allDataA["data"])
+        except FileNotFoundError:
+            print("错误: 找不到 pcRPAResouece.json 文件")
+        except json.JSONDecodeError:
+            print("错误: JSON文件格式不正确")
+            
     elif key == '2':
-        rpa_command.execute_loop(allDataA["data"])
+        # 从JSON文件循环执行
+        try:
+            with open('pcRPAResouece.json', encoding='UTF-8') as f:
+                allDataA = json.load(f)
+            rpa_command.execute_loop(allDataA["data"])
+        except FileNotFoundError:
+            print("错误: 找不到 pcRPAResouece.json 文件")
+        except json.JSONDecodeError:
+            print("错误: JSON文件格式不正确")
+            
     elif key == '3':
+        # 从Excel文件执行一次
+        excel_file = input('请输入Excel文件路径 (默认: rpa_commands.xlsx): ').strip()
+        if not excel_file:
+            excel_file = 'rpa_commands.xlsx'
+        
+        if not os.path.exists(excel_file):
+            print(f"错误: 找不到Excel文件 {excel_file}")
+        else:
+            rpa_command.execute_excel_once(excel_file)
+            
+    elif key == '4':
+        # 从Excel文件循环执行
+        excel_file = input('请输入Excel文件路径 (默认: rpa_commands.xlsx): ').strip()
+        if not excel_file:
+            excel_file = 'rpa_commands.xlsx'
+        
+        if not os.path.exists(excel_file):
+            print(f"错误: 找不到Excel文件 {excel_file}")
+        else:
+            rpa_command.execute_excel_loop(excel_file)
+            
+    elif key == '5':
+        # 创建Excel模板
+        template_file = input('请输入模板文件名 (默认: rpa_template.xlsx): ').strip()
+        if not template_file:
+            template_file = 'rpa_template.xlsx'
+        
+        result = RPACommand.create_excel_template(template_file)
+        if result:
+            print(f"✅ Excel模板已创建: {result}")
+        else:
+            print("❌ 创建Excel模板失败")
+            
+    elif key == '6':
         # 启动GUI界面
         try:
             from rpa_gui import main as gui_main
