@@ -1,7 +1,7 @@
 import json
 import time
 from PyQt5.QtWidgets import (QVBoxLayout, QHBoxLayout, QLabel, QGroupBox, 
-                             QPushButton, QFileDialog, QMessageBox)
+                             QPushButton, QFileDialog, QMessageBox, QDialog)
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QFont
 
@@ -135,21 +135,166 @@ class RecorderWidget(QGroupBox):
         """保存录制结果"""
         if not self.recorder:
             return
-            
-        # 生成默认文件名
+        
+        # 询问保存格式
+        format_choice = self.ask_save_format()
+        if not format_choice:
+            return
+        
+        # 生成默认文件名（不含扩展名）
         timestamp = int(time.time())
-        default_filename = f"recorded_actions_{timestamp}.json"
+        default_filename = f"recorded_actions_{timestamp}"
         
-        file_path, _ = QFileDialog.getSaveFileName(
-            self, "保存录制结果", default_filename, 
-            "JSON Files (*.json);;All Files (*)"
-        )
-        
-        if file_path:
-            if self.recorder.save_to_file(file_path):
-                show_info_message(self, "保存成功", f"录制结果已保存到:\n{file_path}")
+        # 根据格式选择文件对话框
+        if format_choice == "json":
+            file_path, _ = QFileDialog.getSaveFileName(
+                self, "保存录制结果 (JSON格式)", f"{default_filename}.json", 
+                "JSON Files (*.json);;All Files (*)"
+            )
+            if file_path:
+                self.save_single_format(file_path, "json")
                 
-                # 询问是否加载到编辑器
+        elif format_choice == "excel":
+            file_path, _ = QFileDialog.getSaveFileName(
+                self, "保存录制结果 (Excel格式)", f"{default_filename}.xlsx", 
+                "Excel Files (*.xlsx);;All Files (*)"
+            )
+            if file_path:
+                self.save_single_format(file_path, "excel")
+                
+        elif format_choice == "both":
+            # 选择基础路径
+            file_path, _ = QFileDialog.getSaveFileName(
+                self, "保存录制结果 (选择基础文件名)", f"{default_filename}.json", 
+                "JSON Files (*.json);;All Files (*)"
+            )
+            if file_path:
+                # 移除扩展名作为基础路径
+                base_path = file_path.rsplit('.', 1)[0] if '.' in file_path else file_path
+                self.save_both_formats(base_path)
+    
+    def ask_save_format(self):
+        """询问保存格式"""
+        from PyQt5.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QRadioButton, QPushButton, QLabel, QButtonGroup
+        
+        dialog = QDialog(self)
+        dialog.setWindowTitle("选择保存格式")
+        dialog.setFixedSize(400, 250)
+        dialog.setStyleSheet("""
+            QDialog {
+                background-color: #2B2B2B;
+                color: white;
+            }
+            QLabel {
+                color: white;
+                font-size: 14px;
+                font-weight: bold;
+                margin-bottom: 15px;
+            }
+            QRadioButton {
+                color: white;
+                font-size: 13px;
+                padding: 8px;
+                margin: 5px 0;
+            }
+            QRadioButton::indicator {
+                width: 18px;
+                height: 18px;
+            }
+            QRadioButton::indicator:unchecked {
+                border: 2px solid #555;
+                border-radius: 9px;
+                background-color: #2B2B2B;
+            }
+            QRadioButton::indicator:checked {
+                border: 2px solid #00D4AA;
+                border-radius: 9px;
+                background-color: #00D4AA;
+            }
+            QPushButton {
+                background-color: #3498DB;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                font-weight: bold;
+                font-size: 13px;
+                padding: 10px 20px;
+                margin: 5px;
+            }
+            QPushButton:hover {
+                background-color: #2980B9;
+            }
+            QPushButton:pressed {
+                background-color: #21618C;
+            }
+        """)
+        
+        layout = QVBoxLayout(dialog)
+        
+        # 标题
+        title_label = QLabel("📁 选择录制结果的保存格式:")
+        layout.addWidget(title_label)
+        
+        # 单选按钮组
+        button_group = QButtonGroup(dialog)
+        
+        json_radio = QRadioButton("📝 JSON格式 (.json)")
+        json_radio.setToolTip("标准JSON格式，可直接用于RPA执行")
+        
+        excel_radio = QRadioButton("📊 Excel格式 (.xlsx)")
+        excel_radio.setToolTip("Excel表格格式，便于查看和编辑")
+        
+        both_radio = QRadioButton("📋 同时保存两种格式")
+        both_radio.setToolTip("同时生成JSON和Excel两个文件")
+        both_radio.setChecked(True)  # 默认选择
+        
+        button_group.addButton(json_radio)
+        button_group.addButton(excel_radio)
+        button_group.addButton(both_radio)
+        
+        layout.addWidget(json_radio)
+        layout.addWidget(excel_radio)
+        layout.addWidget(both_radio)
+        
+        # 按钮
+        button_layout = QHBoxLayout()
+        
+        ok_button = QPushButton("确定")
+        cancel_button = QPushButton("取消")
+        
+        ok_button.clicked.connect(dialog.accept)
+        cancel_button.clicked.connect(dialog.reject)
+        
+        button_layout.addWidget(ok_button)
+        button_layout.addWidget(cancel_button)
+        layout.addLayout(button_layout)
+        
+        # 显示对话框
+        if dialog.exec_() == QDialog.Accepted:
+            if json_radio.isChecked():
+                return "json"
+            elif excel_radio.isChecked():
+                return "excel"
+            elif both_radio.isChecked():
+                return "both"
+        
+        return None
+    
+    def save_single_format(self, file_path, format_type):
+        """保存单一格式"""
+        success = False
+        
+        if format_type == "json":
+            success = self.recorder.save_to_file(file_path)
+        elif format_type == "excel":
+            success = self.recorder.save_to_excel(file_path)
+        
+        if success:
+            format_name = "JSON" if format_type == "json" else "Excel"
+            show_info_message(self, "保存成功", f"录制结果已保存为{format_name}格式:\n{file_path}")
+            
+            # 询问是否加载到编辑器（仅JSON格式）
+            if format_type == "json":
                 reply = show_question_message(
                     self, "加载到编辑器", 
                     "是否将录制结果加载到JSON编辑器中？"
@@ -157,8 +302,45 @@ class RecorderWidget(QGroupBox):
                 
                 if reply == QMessageBox.Yes:
                     self.load_recorded_data(file_path)
-            else:
-                show_error_message(self, "保存失败", "保存录制结果时出错")
+        else:
+            show_error_message(self, "保存失败", f"保存{format_type.upper()}格式时出错")
+    
+    def save_both_formats(self, base_path):
+        """保存两种格式"""
+        results = self.recorder.save_with_format_choice(base_path, "both")
+        
+        success_count = sum(results.values())
+        total_count = len(results)
+        
+        if success_count == total_count:
+            show_info_message(
+                self, "保存成功", 
+                f"录制结果已保存为两种格式:\n"
+                f"• JSON: {base_path}.json\n"
+                f"• Excel: {base_path}.xlsx"
+            )
+            
+            # 询问是否加载JSON到编辑器
+            reply = show_question_message(
+                self, "加载到编辑器", 
+                "是否将录制结果加载到JSON编辑器中？"
+            )
+            
+            if reply == QMessageBox.Yes:
+                self.load_recorded_data(f"{base_path}.json")
+                
+        elif success_count > 0:
+            # 部分成功
+            success_formats = [fmt for fmt, success in results.items() if success]
+            failed_formats = [fmt for fmt, success in results.items() if not success]
+            
+            show_warning_message(
+                self, "部分保存成功", 
+                f"成功保存: {', '.join(success_formats).upper()}\n"
+                f"保存失败: {', '.join(failed_formats).upper()}"
+            )
+        else:
+            show_error_message(self, "保存失败", "所有格式保存都失败了")
     
     def load_recorded_data(self, file_path):
         """加载录制数据到编辑器"""

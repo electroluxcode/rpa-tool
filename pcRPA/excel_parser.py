@@ -95,10 +95,38 @@ class ExcelParser:
         if pd.isna(param_str) or param_str == '' or param_str == 'nan':
             param_str = '{}'
         
+        # 清理Excel单元格中的换行符和其他空白字符，但保留JSON结构
+        param_str = str(param_str).replace('\r', '').strip()
+        
+        # 对于JSON格式，更智能地处理换行符
+        if param_str.startswith('{') and param_str.endswith('}'):
+            # 对于JSON格式，只清理不必要的换行符，保留JSON结构
+            param_str = ' '.join(param_str.split())  # 将多个空白字符（包括换行符）替换为单个空格
+        else:
+            # 对于非JSON格式，直接清理换行符
+            param_str = param_str.replace('\n', '')
+        
+        # 如果清理后为空，设置默认值
+        if not param_str:
+            param_str = '{}'
+        
         try:
             # 尝试解析为JSON
             if param_str.startswith('{') and param_str.endswith('}'):
-                return json.loads(param_str)
+                try:
+                    return json.loads(param_str)
+                except json.JSONDecodeError as e:
+                    print(f"警告: 第{row_num}行JSON解析失败: {str(e)}")
+                    print(f"原始参数: {repr(param_str)}")
+                    # JSON解析失败时，尝试修复常见问题
+                    fixed_param = self._try_fix_json(param_str)
+                    if fixed_param:
+                        try:
+                            return json.loads(fixed_param)
+                        except:
+                            pass
+                    # 如果修复失败，返回原始字符串
+                    return param_str
             
             # 根据命令类型进行特殊处理
             if cmd_type == "Sleep":
@@ -195,12 +223,35 @@ class ExcelParser:
             # 默认返回字符串参数
             return param_str
             
-        except json.JSONDecodeError:
-            print(f"警告: 第{row_num}行参数JSON格式错误，使用原始字符串: {param_str}")
-            return param_str
         except Exception as e:
             print(f"警告: 第{row_num}行参数解析失败: {str(e)}")
             return param_str
+    
+    def _try_fix_json(self, json_str):
+        """尝试修复常见的JSON格式问题"""
+        try:
+            import re
+            
+            # 移除首尾空白
+            fixed = json_str.strip()
+            
+            # 修复数组末尾的多余逗号: [item1, item2, ] -> [item1, item2]
+            fixed = re.sub(r',\s*]', ']', fixed)
+            
+            # 修复对象末尾的多余逗号: {key1: value1, key2: value2, } -> {key1: value1, key2: value2}
+            fixed = re.sub(r',\s*}', '}', fixed)
+            
+            # 修复属性名没有引号的问题: {key: value} -> {"key": value}
+            # 但要小心不要影响已经有引号的属性名
+            fixed = re.sub(r'(\w+)(\s*:\s*)', r'"\1"\2', fixed)
+            
+            # 修复字符串值没有引号的问题（只处理简单情况）
+            # 这个比较复杂，暂时跳过，因为可能误判数字和布尔值
+            
+            return fixed
+        except Exception as e:
+            print(f"JSON修复失败: {e}")
+            return None
     
     def create_excel_template(self, output_path="rpa_template.xlsx"):
         """创建Excel模板文件"""
@@ -254,8 +305,8 @@ class ExcelParser:
                 },
                 {
                     "cmdType": "OCR",
-                    "cmdParam": '{"target": ["File", "文件"], "then": []}',
-                    "说明": "OCR识别文本"
+                    "cmdParam": '{"target": ["File", "文件"], "then": [{"cmdType": "ClickAfterOCR", "cmdParam": {"x": 10, "y": 20}}]}',
+                    "说明": "OCR识别文本并执行后续操作"
                 },
                 {
                     "cmdType": "ClickAfterOCR",
@@ -274,7 +325,7 @@ class ExcelParser:
                 # 获取工作表对象以设置列宽
                 worksheet = writer.sheets['RPA命令']
                 worksheet.column_dimensions['A'].width = 15  # cmdType列
-                worksheet.column_dimensions['B'].width = 50  # cmdParam列
+                worksheet.column_dimensions['B'].width = 80  # cmdParam列 - 增加宽度以容纳复杂JSON
                 worksheet.column_dimensions['C'].width = 30  # 说明列
             
             print(f"✅ Excel模板已创建: {output_path}")
