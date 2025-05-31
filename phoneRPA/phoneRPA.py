@@ -137,7 +137,7 @@ if __name__ == '__main__':
     # checkCmd = dataCheck(allData)
     f = open('phoneRPAResouece.json', encoding='UTF-8')
     allData = json.load(f)
-    key = input('选择功能: 1.做一次 2.循环到死 \n')
+    key = input('选择功能: 1.单次执行 2.循环执行 \n')
     if key == '1':
         # 循环拿出每一行指令
         mainWork(allData["data"])

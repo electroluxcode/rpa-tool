@@ -32,11 +32,6 @@ rpa-tool
 - android
 
 
-然后 有两种调用方式，
-
-- 通过python直接调用
-- 通过exe加上命令参数调用
-
 具体可以参考
 
 [PC端文档](./pcRPA/README.md)

@@ -45,12 +45,22 @@ class ControlPanel(QFrame):
         self.execution_widget.log_signal.connect(self.log_signal)
         layout.addWidget(self.execution_widget)
         
-        # 连接数据源和执行组件
+        # 连接数据源和执行组件 - 在加载默认数据之前建立连接
         self.data_source_widget.data_changed.connect(self.execution_widget.set_data)
+        
+        # 使用定时器延迟初始化默认数据，确保所有信号连接都已建立
+        self.init_timer = QTimer()
+        self.init_timer.setSingleShot(True)
+        self.init_timer.timeout.connect(self.data_source_widget.initialize_default_data)
+        self.init_timer.start(100)  # 100ms延迟
         
         layout.addStretch()
     
     def cleanup(self):
         """清理资源"""
+        # 停止初始化定时器
+        if hasattr(self, 'init_timer'):
+            self.init_timer.stop()
+        
         self.recorder_widget.cleanup()
         self.execution_widget.cleanup() 

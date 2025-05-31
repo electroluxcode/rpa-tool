@@ -6,6 +6,16 @@ import json
 import threading
 from datetime import datetime
 
+# 导入Excel解析器
+try:
+    from .excel_parser import excel_parser
+except ImportError:
+    try:
+        from excel_parser import excel_parser
+    except ImportError:
+        print("警告: Excel解析模块导入失败，Excel保存功能将不可用")
+        excel_parser = None
+
 class RPARecorder:
     def __init__(self, callback=None):
         self.callback = callback  # 用于向界面发送状态更新
@@ -333,4 +343,143 @@ class RPARecorder:
             return True
         except Exception as e:
             self.log(f"❌ 保存文件时出错: {str(e)}")
-            return False 
+            return False
+    
+    def save_to_excel(self, file_path):
+        """保存录制数据到Excel文件"""
+        if not excel_parser:
+            self.log("❌ Excel解析模块不可用，无法保存为Excel格式")
+            return False
+        
+        try:
+            # 生成JSON数据
+            json_data = self.generate_json()
+            
+            # 转换为Excel格式
+            self.log("📊 正在转换录制数据为Excel格式...")
+            success = self._convert_to_excel(json_data, file_path)
+            
+            if success:
+                self.log(f"✅ 录制数据已保存为Excel文件: {file_path}")
+                return True
+            else:
+                self.log("❌ 转换为Excel格式失败")
+                return False
+                
+        except Exception as e:
+            self.log(f"❌ 保存Excel文件时出错: {str(e)}")
+            return False
+    
+    def _convert_to_excel(self, json_data, excel_path):
+        """将JSON数据转换为Excel格式"""
+        try:
+            import pandas as pd
+            
+            # 准备Excel数据
+            excel_data = []
+            
+            for i, action in enumerate(json_data["data"]):
+                cmd_type = action.get("cmdType", "")
+                cmd_param = action.get("cmdParam", {})
+                
+                # 将参数转换为字符串格式
+                if isinstance(cmd_param, dict):
+                    param_str = json.dumps(cmd_param, ensure_ascii=False)
+                else:
+                    param_str = str(cmd_param)
+                
+                # 清理参数字符串中的换行符，确保Excel单元格显示正常
+                param_str = param_str.replace('\n', '').replace('\r', '').strip()
+                
+                # 生成说明
+                description = self._generate_description(cmd_type, cmd_param)
+                # 同样清理说明中的换行符
+                description = description.replace('\n', '').replace('\r', '').strip()
+                
+                excel_data.append({
+                    "cmdType": cmd_type,
+                    "cmdParam": param_str,
+                    "说明": description
+                })
+            
+            # 创建DataFrame
+            df = pd.DataFrame(excel_data)
+            
+            # 保存为Excel文件
+            with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
+                df.to_excel(writer, sheet_name='录制的RPA命令', index=False)
+                
+                # 获取工作表对象以设置列宽
+                worksheet = writer.sheets['录制的RPA命令']
+                worksheet.column_dimensions['A'].width = 15  # cmdType列
+                worksheet.column_dimensions['B'].width = 60  # cmdParam列
+                worksheet.column_dimensions['C'].width = 40  # 说明列
+                
+                # 添加元数据工作表
+                metadata = json_data.get("metadata", {})
+                metadata_df = pd.DataFrame([
+                    {"属性": "录制时间", "值": metadata.get("recorded_at", "")},
+                    {"属性": "总命令数", "值": metadata.get("total_actions", 0)},
+                    {"属性": "录制时长(秒)", "值": round(metadata.get("recording_duration", 0), 2)},
+                    {"属性": "生成工具", "值": "RPA录制器"},
+                    {"属性": "文件格式", "值": "Excel (.xlsx)"}
+                ])
+                metadata_df.to_excel(writer, sheet_name='录制信息', index=False)
+                
+                # 设置元数据工作表列宽
+                metadata_worksheet = writer.sheets['录制信息']
+                metadata_worksheet.column_dimensions['A'].width = 20
+                metadata_worksheet.column_dimensions['B'].width = 30
+            
+            return True
+            
+        except ImportError:
+            self.log("❌ 缺少pandas或openpyxl依赖，无法保存Excel文件")
+            self.log("请运行: pip install pandas openpyxl")
+            return False
+        except Exception as e:
+            self.log(f"❌ 转换Excel时出错: {str(e)}")
+            return False
+    
+    def _generate_description(self, cmd_type, cmd_param):
+        """为命令生成中文描述"""
+        descriptions = {
+            "Click": lambda p: f"点击坐标({p.get('x', 0)}, {p.get('y', 0)}) - {p.get('button', 'left')}键",
+            "MoveTo": lambda p: f"移动鼠标到({p.get('x', 0)}, {p.get('y', 0)})",
+            "DragTo": lambda p: f"拖拽到({p.get('x', 0)}, {p.get('y', 0)}) - 耗时{p.get('duration', 0)}秒",
+            "Scroll": lambda p: f"滚轮操作 - 方向{p}",
+            "Write": lambda p: f"输入文本: {p.get('message', '') if isinstance(p, dict) else str(p)}",
+            "ChineseWrite": lambda p: f"输入中文: {p}",
+            "Press": lambda p: f"按键: {p.get('keys', '') if isinstance(p, dict) else str(p)}",
+            "Sleep": lambda p: f"等待 {p} 秒"
+        }
+        
+        try:
+            if cmd_type in descriptions:
+                return descriptions[cmd_type](cmd_param)
+            else:
+                return f"{cmd_type} 操作"
+        except:
+            return f"{cmd_type} 操作"
+    
+    def save_with_format_choice(self, base_path, save_format="both"):
+        """根据格式选择保存文件
+        
+        Args:
+            base_path: 基础文件路径（不含扩展名）
+            save_format: 保存格式 ("json", "excel", "both")
+        
+        Returns:
+            dict: 保存结果 {"json": bool, "excel": bool}
+        """
+        results = {"json": False, "excel": False}
+        
+        if save_format in ["json", "both"]:
+            json_path = f"{base_path}.json"
+            results["json"] = self.save_to_file(json_path)
+        
+        if save_format in ["excel", "both"]:
+            excel_path = f"{base_path}.xlsx"
+            results["excel"] = self.save_to_excel(excel_path)
+        
+        return results 

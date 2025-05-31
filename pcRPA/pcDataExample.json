@@ -14,7 +14,11 @@
             "OCR",
             "ClickAfterOCR",
             "MoveToAfterOCR",
-            "DragToAfterOCR"
+            "DragToAfterOCR",
+            "SearchImage",
+            "ClickAfterImg",
+            "MoveToAfterImg",
+            "DragToAfterImg"
         ],
         "Cn": [
             "点击图片",
@@ -26,7 +30,15 @@
             "网页tab栏切换",
             "点击坐标",
             "鼠标移动",
-            "鼠标拖拽"
+            "鼠标拖拽",
+            "OCR识别",
+            "基于OCR点击",
+            "基于OCR移动",
+            "基于OCR拖拽",
+            "搜索图片",
+            "基于图片点击",
+            "基于图片移动",
+            "基于图片拖拽"
         ]
     },
     "data": [
@@ -34,6 +46,9 @@
             "cmdType": "OCR",
             "cmdParam": {
                 "target": ["File"],
+                "waitForTarget": true,
+                "detecttime": 0.5,
+                "maxWaitTime": 30,
                 "then": [
                     {
                         "cmdType": "ClickAfterOCR",
@@ -57,6 +72,59 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "cmdType": "SearchImage",
+            "cmdParam": {
+                "target": ["button.jpg", "button_alt.jpg"],
+                "waitForTarget": true,
+                "detecttime": 0.5,
+                "maxWaitTime": 30,
+                "region": "center"
+            }
+        },
+        {
+            "cmdType": "ClickAfterImg",
+            "cmdParam": {
+                "x": 0,
+                "y": 0,
+                "clicks": 1,
+                "button": "left"
+            }
+        },
+        {
+            "cmdType": "SearchImage",
+            "cmdParam": {
+                "target": ["menu_button.jpg"],
+                "waitForTarget": false
+            }
+        },
+        {
+            "cmdType": "ClickAfterImg",
+            "cmdParam": {
+                "x": 50,
+                "y": 20
+            }
+        },
+        {
+            "cmdType": "MoveToAfterImg",
+            "cmdParam": {
+                "x": 100,
+                "y": 50
+            }
+        },
+        {
+            "cmdType": "DragToAfterImg",
+            "cmdParam": {
+                "x": 200,
+                "y": 100
+            }
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "target": ["legacy_button.jpg"]
             }
         },
         {
@@ -90,12 +158,6 @@
             "cmdParam": {
                 "x": 100,
                 "y": 100
-            }
-        },
-        {
-            "cmdType": "ImgClick",
-            "cmdParam": {
-                "imgPath": "button.jpg"
             }
         },
         {
