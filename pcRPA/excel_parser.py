@@ -8,6 +8,96 @@ from datetime import datetime
 def json_to_string(json_obj):
     """将JSON对象转换为紧凑的字符串格式，用于Excel中的cmdParam字段"""
     return json.dumps(json_obj, ensure_ascii=False, separators=(',', ':'))
+
+def json_to_excel(json_data, output_excel_path=None):
+    """
+    将JSON数据导出为Excel文件
+    
+    Args:
+        json_data: JSON数据(字典或文件路径)
+        output_excel_path: 输出Excel文件路径，如果为None则自动生成
+        
+    Returns:
+        str: 生成的Excel文件路径
+    """
+    try:
+        # 如果输入是文件路径，先读取JSON文件
+        if isinstance(json_data, str):
+            if os.path.isfile(json_data):
+                with open(json_data, 'r', encoding='utf-8') as f:
+                    json_data = json.load(f)
+            else:
+                raise ValueError(f"找不到JSON文件: {json_data}")
+        
+        # 确保json_data是字典格式
+        if not isinstance(json_data, dict):
+            raise ValueError("JSON数据必须是字典格式")
+        
+        # 确保包含"data"字段
+        if "data" not in json_data:
+            if isinstance(json_data, list):
+                # 如果是列表，直接使用
+                actions = json_data
+            else:
+                raise ValueError("JSON数据格式不正确，缺少'data'字段")
+        else:
+            # 从JSON数据中提取actions列表
+            actions = json_data["data"]
+        
+        # 创建Excel数据
+        excel_data = []
+        for action in actions:
+            if not isinstance(action, dict):
+                continue
+                
+            cmd_type = action.get("cmdType", "")
+            cmd_param = action.get("cmdParam", {})
+            
+            # 将cmdParam转换为字符串格式
+            if isinstance(cmd_param, (dict, list)):
+                cmd_param_str = json.dumps(cmd_param, ensure_ascii=False, indent=2)
+            else:
+                cmd_param_str = str(cmd_param)
+            
+            excel_data.append({
+                "cmdType": cmd_type,
+                "cmdParam": cmd_param_str,
+                "说明": ""  # 添加一个空的说明列
+            })
+        
+        # 创建DataFrame
+        df = pd.DataFrame(excel_data)
+        
+        # 如果没有指定输出路径，生成一个默认路径
+        if output_excel_path is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            output_excel_path = f"rpa_export_{timestamp}.xlsx"
+        
+        # 保存为Excel文件
+        with pd.ExcelWriter(output_excel_path, engine='openpyxl') as writer:
+            df.to_excel(writer, sheet_name='RPA命令', index=False)
+            
+            # 获取工作表对象以设置列宽和行高
+            worksheet = writer.sheets['RPA命令']
+            worksheet.column_dimensions['A'].width = 15  # cmdType列
+            worksheet.column_dimensions['B'].width = 100  # cmdParam列 - 增加宽度以容纳多行JSON
+            worksheet.column_dimensions['C'].width = 35  # 说明列
+            
+            # 设置文本换行
+            from openpyxl.styles import Alignment
+            for row_num in range(2, len(excel_data) + 2):
+                cell = worksheet[f'B{row_num}']  # cmdParam列
+                cell.alignment = Alignment(wrap_text=True, vertical='top')
+        
+        print(f"✅ JSON数据已成功导出为Excel: {output_excel_path}")
+        print(f"📊 共导出了 {len(excel_data)} 个操作")
+        
+        return output_excel_path
+        
+    except Exception as e:
+        print(f"❌ 导出Excel失败: {str(e)}")
+        raise
+
 class ExcelParser:
     def __init__(self):
         self.supported_cmd_types = [
@@ -16,6 +106,19 @@ class ExcelParser:
             "OCR", "ClickAfterOCR", "MoveToAfterOCR", "DragToAfterOCR",
             "SearchImage", "ClickAfterImg", "MoveToAfterImg", "DragToAfterImg"
         ]
+    
+    def json_to_excel(self, json_data, output_excel_path=None):
+        """
+        将JSON数据导出为Excel文件 (类方法)
+        
+        Args:
+            json_data: JSON数据(字典或文件路径)
+            output_excel_path: 输出Excel文件路径，如果为None则自动生成
+            
+        Returns:
+            str: 生成的Excel文件路径
+        """
+        return json_to_excel(json_data, output_excel_path)
     
     def excel_to_json(self, excel_file_path, output_json_path=None):
         """
