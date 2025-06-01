@@ -3,7 +3,7 @@ import os
 from PyQt5.QtWidgets import (QVBoxLayout, QHBoxLayout, QLabel, QGroupBox, 
                              QPushButton, QTextEdit, QFileDialog, QMessageBox,
                              QTabWidget, QWidget, QTableWidget, QTableWidgetItem,
-                             QHeaderView, QSplitter, QFrame)
+                             QHeaderView, QSplitter, QFrame, QScrollArea, QSizePolicy)
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QFont
 
@@ -32,13 +32,22 @@ class DataSourceWidget(QGroupBox):
         
     def init_ui(self):
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(5, 10, 5, 5)  # 减少整体边距
+        layout.setSpacing(5)  # 减少控件间距
         
         # 创建标签页
         self.tab_widget = QTabWidget()
+        # 设置一个最小高度，增加20%的高度
+        self.tab_widget.setMinimumHeight(320)  # 增加整体高度
+        # 修改tab widget的sizePolicy，使其不强制同步所有页面高度
+        size_policy = self.tab_widget.sizePolicy()
+        size_policy.setVerticalPolicy(QSizePolicy.Preferred)
+        self.tab_widget.setSizePolicy(size_policy)
+        
         self.tab_widget.setStyleSheet("""
             QTabWidget::pane {
-                border: 2px solid #444;
-                border-radius: 8px;
+                border: 1px solid #444;
+                border-radius: 6px;
                 background-color: #2B2B2B;
             }
             QTabWidget::tab-bar {
@@ -47,10 +56,10 @@ class DataSourceWidget(QGroupBox):
             QTabBar::tab {
                 background-color: #3C3C3C;
                 color: white;
-                padding: 12px 20px;
+                padding: 10px 16px;
                 margin-right: 2px;
-                border-top-left-radius: 8px;
-                border-top-right-radius: 8px;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
                 font-weight: bold;
                 font-size: 13px;
             }
@@ -63,69 +72,135 @@ class DataSourceWidget(QGroupBox):
             }
         """)
         
-        # JSON标签页
-        self.json_tab = self.create_json_tab()
-        self.tab_widget.addTab(self.json_tab, "📝 JSON编辑器")
+        # JSON标签页 - 使用QScrollArea包装，确保滚动而不影响其他标签页
+        self.json_tab = QWidget()
+        self.json_tab.setStyleSheet("background-color: #2B2B2B;")
+        json_scroll = QScrollArea()
+        json_scroll.setStyleSheet("""
+            QScrollArea {
+                background-color: #2B2B2B;
+                border: none;
+            }
+            QScrollBar:vertical {
+                background-color: #2B2B2B;
+                width: 10px;
+                margin: 0px;
+            }
+            QScrollBar::handle:vertical {
+                background-color: #555;
+                min-height: 20px;
+                border-radius: 5px;
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                height: 0px;
+            }
+        """)
+        json_scroll.setWidget(self.json_tab)
+        json_scroll.setWidgetResizable(True)
+        json_scroll.setFrameShape(QFrame.NoFrame)
+        self.create_json_tab(self.json_tab)
+        self.tab_widget.addTab(json_scroll, "📝 JSON管理")
         
-        # Excel标签页
-        self.excel_tab = self.create_excel_tab()
-        self.tab_widget.addTab(self.excel_tab, "📊 Excel管理")
-        
-        # 预览标签页
-        self.preview_tab = self.create_preview_tab()
-        self.tab_widget.addTab(self.preview_tab, "👁️ 数据预览")
+        # Excel标签页 - 使用QScrollArea包装，确保滚动而不影响其他标签页
+        self.excel_tab = QWidget()
+        self.excel_tab.setStyleSheet("background-color: #2B2B2B;")
+        excel_scroll = QScrollArea()
+        excel_scroll.setStyleSheet("""
+            QScrollArea {
+                background-color: #2B2B2B;
+                border: none;
+            }
+            QScrollBar:vertical {
+                background-color: #2B2B2B;
+                width: 10px;
+                margin: 0px;
+            }
+            QScrollBar::handle:vertical {
+                background-color: #555;
+                min-height: 20px;
+                border-radius: 5px;
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                height: 0px;
+            }
+        """)
+        excel_scroll.setWidget(self.excel_tab)
+        excel_scroll.setWidgetResizable(True)
+        excel_scroll.setFrameShape(QFrame.NoFrame)
+        self.create_excel_tab(self.excel_tab)
+        self.tab_widget.addTab(excel_scroll, "📊 Excel管理")
         
         layout.addWidget(self.tab_widget)
         
-        # 标签页切换事件
-        self.tab_widget.currentChanged.connect(self.on_tab_changed)
+        # 设置整体GroupBox的暗色主题样式
+        self.setStyleSheet("""
+            QGroupBox {
+                background-color: #2B2B2B;
+                color: white;
+                border: 1px solid #444;
+                border-radius: 6px;
+                margin-top: 12px;
+                padding-top: 15px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                subcontrol-position: top left;
+                padding: 0 5px;
+                color: #00D4AA;
+            }
+        """)
     
-    def create_json_tab(self):
+    def create_json_tab(self, tab):
         """创建JSON编辑标签页"""
-        tab = QWidget()
         layout = QVBoxLayout(tab)
+        layout.setContentsMargins(10, 10, 10, 10)  # 设置边距更小
+        layout.setSpacing(8)  # 设置控件间距更小
+        layout.setAlignment(Qt.AlignTop)  # 设置顶部对齐
         
-        # JSON操作按钮
+        # JSON操作按钮 - 一行显示所有按钮
         json_buttons_layout = QHBoxLayout()
+        json_buttons_layout.setSpacing(8)  # 设置按钮间距
         
         upload_json_btn = QPushButton("📂 上传JSON文件")
         upload_json_btn.clicked.connect(self.upload_json)
-        upload_json_btn.setMinimumHeight(40)
+        upload_json_btn.setMinimumHeight(36)  # 稍微减小高度
         upload_json_btn.setStyleSheet(self.get_button_style("#3498DB", "#2980B9"))
         
         validate_json_btn = QPushButton("✅ 验证JSON格式")
         validate_json_btn.clicked.connect(self.validate_json)
-        validate_json_btn.setMinimumHeight(40)
+        validate_json_btn.setMinimumHeight(36)  # 稍微减小高度
         validate_json_btn.setStyleSheet(self.get_button_style("#27AE60", "#229954"))
         
         export_json_btn = QPushButton("💾 导出JSON文件")
         export_json_btn.clicked.connect(self.export_json)
-        export_json_btn.setMinimumHeight(40)
+        export_json_btn.setMinimumHeight(36)  # 稍微减小高度
         export_json_btn.setStyleSheet(self.get_button_style("#34495E", "#2C3E50"))
         
         json_buttons_layout.addWidget(upload_json_btn)
         json_buttons_layout.addWidget(validate_json_btn)
         json_buttons_layout.addWidget(export_json_btn)
+        json_buttons_layout.addStretch()
         layout.addLayout(json_buttons_layout)
         
         # JSON编辑器
         editor_label = QLabel("📝 JSON 编辑器:")
         editor_label.setFont(QFont("Microsoft YaHei", 11, QFont.Bold))
-        editor_label.setStyleSheet("color: white; margin-top: 10px;")
+        editor_label.setStyleSheet("color: white;")
         layout.addWidget(editor_label)
         
         self.json_editor = QTextEdit()
-        self.json_editor.setMinimumHeight(300)
+        self.json_editor.setMinimumHeight(144)  # 增加20%高度，从120增加到144
+        self.json_editor.setMaximumHeight(180)  # 增加20%高度，从150增加到180
         self.json_editor.setStyleSheet("""
             QTextEdit {
                 background-color: #1E1E1E;
                 color: #D4D4D4;
-                border: 2px solid #444;
-                border-radius: 8px;
-                padding: 12px;
+                border: 1px solid #444;
+                border-radius: 6px;
+                padding: 8px;
                 font-family: 'Consolas', 'Monaco', monospace;
-                font-size: 13px;
-                line-height: 1.5;
+                font-size: 12px;
+                line-height: 1.4;
             }
             QTextEdit:focus {
                 border-color: #00D4AA;
@@ -133,29 +208,36 @@ class DataSourceWidget(QGroupBox):
         """)
         self.json_editor.textChanged.connect(self.on_json_changed)
         layout.addWidget(self.json_editor)
-        
-        return tab
     
-    def create_excel_tab(self):
+    def create_excel_tab(self, tab):
         """创建Excel管理标签页"""
-        tab = QWidget()
         layout = QVBoxLayout(tab)
+        layout.setContentsMargins(10, 10, 10, 10)  # 设置边距更小
+        layout.setSpacing(8)  # 设置控件间距更小
+        layout.setAlignment(Qt.AlignTop)  # 设置顶部对齐
         
         # Excel操作按钮
         excel_buttons_layout = QHBoxLayout()
+        excel_buttons_layout.setSpacing(8)  # 设置按钮间距
         
         upload_excel_btn = QPushButton("📊 上传Excel文件")
         upload_excel_btn.clicked.connect(self.upload_excel)
-        upload_excel_btn.setMinimumHeight(40)
+        upload_excel_btn.setMinimumHeight(36)  # 稍微减小高度
         upload_excel_btn.setStyleSheet(self.get_button_style("#E67E22", "#D35400"))
         
         download_template_btn = QPushButton("📥 下载Excel模板")
         download_template_btn.clicked.connect(self.download_excel_template)
-        download_template_btn.setMinimumHeight(40)
+        download_template_btn.setMinimumHeight(36)  # 稍微减小高度
         download_template_btn.setStyleSheet(self.get_button_style("#9B59B6", "#8E44AD"))
+        
+        export_to_excel_btn = QPushButton("📊 导出为Excel")
+        export_to_excel_btn.clicked.connect(self.export_to_excel)
+        export_to_excel_btn.setMinimumHeight(36)  # 稍微减小高度
+        export_to_excel_btn.setStyleSheet(self.get_button_style("#27AE60", "#229954"))
         
         excel_buttons_layout.addWidget(upload_excel_btn)
         excel_buttons_layout.addWidget(download_template_btn)
+        excel_buttons_layout.addWidget(export_to_excel_btn)
         excel_buttons_layout.addStretch()
         layout.addLayout(excel_buttons_layout)
         
@@ -165,16 +247,18 @@ class DataSourceWidget(QGroupBox):
             QFrame {
                 background-color: #3C3C3C;
                 border: 1px solid #555;
-                border-radius: 8px;
-                padding: 15px;
-                margin: 10px 0;
+                border-radius: 6px;
+                padding: 8px;
+                margin: 5px 0;
             }
         """)
         info_layout = QVBoxLayout(info_frame)
+        info_layout.setContentsMargins(8, 8, 8, 8)  # 减小内边距
+        info_layout.setSpacing(3)  # 减小间距
         
         info_title = QLabel("📊 Excel功能说明")
-        info_title.setFont(QFont("Microsoft YaHei", 12, QFont.Bold))
-        info_title.setStyleSheet("color: #00D4AA; margin-bottom: 10px;")
+        info_title.setFont(QFont("Microsoft YaHei", 10, QFont.Bold))
+        info_title.setStyleSheet("color: #00D4AA;")
         info_layout.addWidget(info_title)
         
         info_text = QLabel("""
@@ -183,8 +267,9 @@ class DataSourceWidget(QGroupBox):
 • 可以下载模板文件作为参考
 • 上传后会自动转换为JSON格式
 • 支持所有RPA命令类型，包括OCR功能
+• 可以将当前JSON数据导出为Excel格式
         """)
-        info_text.setStyleSheet("color: #CCCCCC; line-height: 1.6;")
+        info_text.setStyleSheet("color: #CCCCCC; line-height: 1.3;")
         info_text.setWordWrap(True)
         info_layout.addWidget(info_text)
         
@@ -196,83 +281,39 @@ class DataSourceWidget(QGroupBox):
             QLabel {
                 background-color: #2C3E50;
                 color: white;
-                padding: 10px;
-                border-radius: 6px;
+                padding: 6px;
+                border-radius: 4px;
                 font-weight: bold;
             }
         """)
         layout.addWidget(self.excel_status_label)
         
-        layout.addStretch()
-        return tab
-    
-    def create_preview_tab(self):
-        """创建数据预览标签页"""
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
+        # 在Excel标签页中添加JSON编辑器
+        json_editor_label = QLabel("📝 JSON 编辑器:")
+        json_editor_label.setFont(QFont("Microsoft YaHei", 11, QFont.Bold))
+        json_editor_label.setStyleSheet("color: white;")
+        layout.addWidget(json_editor_label)
         
-        # 预览标题
-        preview_title = QLabel("👁️ 当前数据预览")
-        preview_title.setFont(QFont("Microsoft YaHei", 12, QFont.Bold))
-        preview_title.setStyleSheet("color: #00D4AA; margin-bottom: 10px;")
-        layout.addWidget(preview_title)
-        
-        # 数据统计
-        self.stats_label = QLabel("📊 统计信息: 0 个命令")
-        self.stats_label.setStyleSheet("""
-            QLabel {
-                background-color: #3C3C3C;
-                color: white;
-                padding: 8px 12px;
-                border-radius: 6px;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
-        """)
-        layout.addWidget(self.stats_label)
-        
-        # 数据表格
-        self.preview_table = QTableWidget()
-        self.preview_table.setColumnCount(3)
-        self.preview_table.setHorizontalHeaderLabels(["序号", "命令类型", "参数预览"])
-        
-        # 设置表格样式
-        self.preview_table.setStyleSheet("""
-            QTableWidget {
-                background-color: #2B2B2B;
-                color: white;
+        self.excel_json_editor = QTextEdit()
+        self.excel_json_editor.setMinimumHeight(144)  # 增加20%高度，从120增加到144
+        self.excel_json_editor.setMaximumHeight(180)  # 增加20%高度，从150增加到180
+        self.excel_json_editor.setStyleSheet("""
+            QTextEdit {
+                background-color: #1E1E1E;
+                color: #D4D4D4;
                 border: 1px solid #444;
-                border-radius: 8px;
-                gridline-color: #444;
-                font-size: 12px;
-            }
-            QTableWidget::item {
+                border-radius: 6px;
                 padding: 8px;
-                border-bottom: 1px solid #444;
+                font-family: 'Consolas', 'Monaco', monospace;
+                font-size: 12px;
+                line-height: 1.4;
             }
-            QTableWidget::item:selected {
-                background-color: #00D4AA;
-                color: #1E1E1E;
-            }
-            QHeaderView::section {
-                background-color: #3C3C3C;
-                color: white;
-                padding: 10px;
-                border: none;
-                font-weight: bold;
+            QTextEdit:focus {
+                border-color: #00D4AA;
             }
         """)
-        
-        # 设置列宽
-        header = self.preview_table.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.Fixed)
-        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QHeaderView.Stretch)
-        self.preview_table.setColumnWidth(0, 60)
-        
-        layout.addWidget(self.preview_table)
-        
-        return tab
+        self.excel_json_editor.textChanged.connect(self.on_excel_json_changed)
+        layout.addWidget(self.excel_json_editor)
     
     def get_button_style(self, bg_color, hover_color):
         """获取按钮样式"""
@@ -323,56 +364,6 @@ class DataSourceWidget(QGroupBox):
             pass
         
         self.load_json_data(default_json)
-    
-    def on_tab_changed(self, index):
-        """标签页切换事件"""
-        if index == 2:  # 预览标签页
-            self.update_preview_table()
-    
-    def update_preview_table(self):
-        """更新预览表格"""
-        if not self.current_data or "data" not in self.current_data:
-            self.preview_table.setRowCount(0)
-            self.stats_label.setText("📊 统计信息: 0 个命令")
-            return
-        
-        commands = self.current_data["data"]
-        self.preview_table.setRowCount(len(commands))
-        
-        for i, cmd in enumerate(commands):
-            # 序号
-            self.preview_table.setItem(i, 0, QTableWidgetItem(str(i + 1)))
-            
-            # 命令类型
-            cmd_type = cmd.get("cmdType", "Unknown")
-            self.preview_table.setItem(i, 1, QTableWidgetItem(cmd_type))
-            
-            # 参数预览
-            cmd_param = cmd.get("cmdParam", {})
-            if isinstance(cmd_param, dict):
-                param_preview = ", ".join([f"{k}:{v}" for k, v in list(cmd_param.items())[:3]])
-                if len(cmd_param) > 3:
-                    param_preview += "..."
-            else:
-                param_preview = str(cmd_param)[:50]
-                if len(str(cmd_param)) > 50:
-                    param_preview += "..."
-            
-            self.preview_table.setItem(i, 2, QTableWidgetItem(param_preview))
-        
-        # 更新统计信息
-        cmd_types = {}
-        for cmd in commands:
-            cmd_type = cmd.get("cmdType", "Unknown")
-            cmd_types[cmd_type] = cmd_types.get(cmd_type, 0) + 1
-        
-        stats_text = f"📊 统计信息: {len(commands)} 个命令"
-        if cmd_types:
-            top_types = sorted(cmd_types.items(), key=lambda x: x[1], reverse=True)[:3]
-            type_summary = ", ".join([f"{t}({c})" for t, c in top_types])
-            stats_text += f" | 主要类型: {type_summary}"
-        
-        self.stats_label.setText(stats_text)
     
     def update_excel_status(self, message, is_success=True):
         """更新Excel状态"""
@@ -446,8 +437,8 @@ class DataSourceWidget(QGroupBox):
                     # 更新Excel状态
                     self.update_excel_status(f"成功加载 {len(json_data['data'])} 个命令")
                     
-                    # 自动切换到JSON编辑器标签页显示结果
-                    self.tab_widget.setCurrentIndex(0)
+                    # 不再自动切换到JSON编辑器标签页，留在Excel标签页
+                    # self.tab_widget.setCurrentIndex(0)
                     
                     # 显示转换成功信息
                     QMessageBox.information(
@@ -456,7 +447,7 @@ class DataSourceWidget(QGroupBox):
                         f"Excel文件已成功转换为JSON格式\n"
                         f"文件: {os.path.basename(file_path)}\n"
                         f"命令数量: {len(json_data['data'])}\n\n"
-                        f"已自动切换到JSON编辑器查看结果"
+                        f"JSON数据已在当前页面更新"
                     )
                 else:
                     QMessageBox.critical(self, "转换失败", "Excel文件转换失败")
@@ -505,36 +496,83 @@ class DataSourceWidget(QGroupBox):
     
     def export_json(self):
         """导出JSON文件"""
-        current_data = self.get_current_data()
-        if not current_data:
-            QMessageBox.warning(self, "导出失败", "当前没有有效的JSON数据")
-            return
-        
-        # 选择保存位置
-        file_path, _ = QFileDialog.getSaveFileName(
-            self, 
-            "导出JSON文件", 
-            "rpa_commands.json", 
-            "JSON Files (*.json);;All Files (*)"
-        )
-        
-        if file_path:
-            try:
-                with open(file_path, 'w', encoding='utf-8') as f:
-                    json.dump(current_data, f, ensure_ascii=False, indent=2)
+        try:
+            data = self.get_current_data()
+            if not data:
+                QMessageBox.warning(self, "导出失败", "当前没有有效的JSON数据可导出")
+                return
+            
+            file_path, _ = QFileDialog.getSaveFileName(
+                self, "保存JSON文件", "", "JSON Files (*.json);;All Files (*)"
+            )
+            
+            if not file_path:
+                return
                 
-                QMessageBox.information(self, "导出成功", f"JSON文件已导出:\n{file_path}")
-                self.log_signal.emit(f"💾 JSON文件已导出: {os.path.basename(file_path)}")
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
                 
-            except Exception as e:
-                QMessageBox.critical(self, "导出错误", f"导出JSON文件时出错:\n{str(e)}")
-                self.log_signal.emit(f"❌ JSON导出错误: {str(e)}")
+            QMessageBox.information(
+                self, "导出成功", 
+                f"JSON数据已成功导出到:\n{file_path}"
+            )
+            self.log_signal.emit(f"✅ JSON数据已成功导出到: {file_path}")
+        
+        except Exception as e:
+            QMessageBox.critical(self, "导出失败", f"导出JSON文件时出错:\n{str(e)}")
+            self.log_signal.emit(f"❌ JSON导出失败: {str(e)}")
+            
+    def export_to_excel(self):
+        """导出当前JSON数据为Excel文件"""
+        try:
+            # 检查是否有excel_parser可用
+            if excel_parser is None:
+                QMessageBox.critical(
+                    self, "功能不可用", 
+                    "导出Excel功能需要Excel解析模块，但该模块未能正确加载。"
+                )
+                return
+            
+            # 获取当前JSON数据
+            data = self.get_current_data()
+            if not data:
+                QMessageBox.warning(self, "导出失败", "当前没有有效的JSON数据可导出")
+                return
+            
+            # 选择保存路径
+            file_path, _ = QFileDialog.getSaveFileName(
+                self, "保存Excel文件", "", "Excel Files (*.xlsx);;All Files (*)"
+            )
+            
+            if not file_path:
+                return
+            
+            # 如果文件名没有.xlsx后缀，添加它
+            if not file_path.lower().endswith('.xlsx'):
+                file_path += '.xlsx'
+            
+            # 导出到Excel
+            output_path = excel_parser.json_to_excel(data, file_path)
+            
+            QMessageBox.information(
+                self, "导出成功", 
+                f"JSON数据已成功导出为Excel文件:\n{output_path}"
+            )
+            self.log_signal.emit(f"✅ JSON数据已成功导出为Excel: {output_path}")
+        
+        except Exception as e:
+            QMessageBox.critical(self, "导出失败", f"导出Excel文件时出错:\n{str(e)}")
+            self.log_signal.emit(f"❌ 导出Excel失败: {str(e)}")
     
     def load_json_data(self, data):
         """加载JSON数据到编辑器"""
         self.current_data = data
         formatted_json = json.dumps(data, ensure_ascii=False, indent=2)
+        
+        # 更新两个编辑器
         self.json_editor.setPlainText(formatted_json)
+        if hasattr(self, 'excel_json_editor'):
+            self.excel_json_editor.setPlainText(formatted_json)
         
         # 触发数据变更信号，确保执行组件能接收到数据
         self.data_changed.emit(data)
@@ -568,10 +606,6 @@ class DataSourceWidget(QGroupBox):
             QMessageBox.information(self, "验证成功", "✅ JSON格式正确!")
             self.log_signal.emit("✅ JSON格式验证通过")
             
-            # 更新预览表格
-            if self.tab_widget.currentIndex() == 2:
-                self.update_preview_table()
-            
             return True
             
         except json.JSONDecodeError as e:
@@ -588,9 +622,28 @@ class DataSourceWidget(QGroupBox):
                 self.current_data = data
                 self.data_changed.emit(data)
                 
-                # 如果当前在预览标签页，更新预览
-                if self.tab_widget.currentIndex() == 2:
-                    self.update_preview_table()
+                # 同步更新Excel标签页中的JSON编辑器，避免循环触发
+                if hasattr(self, 'excel_json_editor') and self.excel_json_editor.toPlainText() != content:
+                    self.excel_json_editor.blockSignals(True)
+                    self.excel_json_editor.setPlainText(content)
+                    self.excel_json_editor.blockSignals(False)
+        except:
+            pass  # 忽略格式错误，用户可能正在编辑
+    
+    def on_excel_json_changed(self):
+        """Excel标签页中的JSON内容改变时触发"""
+        try:
+            content = self.excel_json_editor.toPlainText().strip()
+            if content:
+                data = json.loads(content)
+                self.current_data = data
+                self.data_changed.emit(data)
+                
+                # 同步更新JSON标签页中的编辑器，避免循环触发
+                if self.json_editor.toPlainText() != content:
+                    self.json_editor.blockSignals(True)
+                    self.json_editor.setPlainText(content)
+                    self.json_editor.blockSignals(False)
         except:
             pass  # 忽略格式错误，用户可能正在编辑
     
