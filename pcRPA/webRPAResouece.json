@@ -1,84 +1,189 @@
 {
     "name": "Electrolux",
     "description": {
-    
+        "cmdType": [
+            "ImgClick",
+            "ImgRightClick",
+            "Write",
+            "Sleep",
+            "Scroll",
+            "KeyUp",
+            "Click",
+            "MoveTo",
+            "DragTo",
+            "OCR",
+            "ClickAfterOCR",
+            "MoveToAfterOCR",
+            "DragToAfterOCR",
+            "SearchImage",
+            "ClickAfterImg",
+            "MoveToAfterImg",
+            "DragToAfterImg"
+        ],
+        "Cn": [
+            "点击图片",
+            "右键",
+            "输入",
+            "等待",
+            "滚轮",
+            "网页刷新",
+            "网页tab栏切换",
+            "点击坐标",
+            "鼠标移动",
+            "鼠标拖拽",
+            "OCR识别",
+            "基于OCR点击",
+            "基于OCR移动",
+            "基于OCR拖拽",
+            "搜索图片",
+            "基于图片点击",
+            "基于图片移动",
+            "基于图片拖拽"
+        ]
     },
     "data": [
         {
-            "cmdType": "Sleep",
-            "cmdParam": 5
-        },
-        {
-            "cmdType": "Click",
-            "description": "点击自动收集",
+            "cmdType": "OCR",
             "cmdParam": {
-                "x": 174,
-                "y": 1420,
-                "clicks": 1
+                "target": ["File"],
+                "waitForTarget": true,
+                "detecttime": 0.5,
+                "maxWaitTime": 30,
+                "then": [
+                    {
+                        "cmdType": "ClickAfterOCR",
+                        "cmdParam": {
+                            "x": 100,
+                            "y": 100
+                        }
+                    },
+                    {
+                        "cmdType": "MoveToAfterOCR",
+                        "cmdParam": {
+                            "x": 100,
+                            "y": 100
+                        }
+                    },
+                    {
+                        "cmdType": "DragToAfterOCR",
+                        "cmdParam": {
+                            "x": 200,
+                            "y": 100
+                        }
+                    }
+                ]
             }
         },
         {
-            "cmdType": "Sleep",
-            "description": "自动收集的时间",
-            "cmdParam": 600
+            "cmdType": "SearchImage",
+            "cmdParam": {
+                "target": ["button.jpg", "button_alt.jpg"],
+                "waitForTarget": true,
+                "detecttime": 0.5,
+                "maxWaitTime": 30,
+                "region": "center"
+            }
+        },
+        {
+            "cmdType": "ClickAfterImg",
+            "cmdParam": {
+                "x": 0,
+                "y": 0,
+                "clicks": 1,
+                "button": "left"
+            }
+        },
+        {
+            "cmdType": "SearchImage",
+            "cmdParam": {
+                "target": ["menu_button.jpg"],
+                "waitForTarget": false
+            }
+        },
+        {
+            "cmdType": "ClickAfterImg",
+            "cmdParam": {
+                "x": 50,
+                "y": 20
+            }
+        },
+        {
+            "cmdType": "MoveToAfterImg",
+            "cmdParam": {
+                "x": 100,
+                "y": 50
+            }
+        },
+        {
+            "cmdType": "DragToAfterImg",
+            "cmdParam": {
+                "x": 200,
+                "y": 100
+            }
+        },
+        {
+            "cmdType": "ImgClick",
+            "cmdParam": {
+                "target": ["legacy_button.jpg"]
+            }
         },
         {
             "cmdType": "Click",
-            "description": "场景内点击 返航",
             "cmdParam": {
-                "x": 1831,
-                "y": 1365,
-                "clicks": 1
-            }
-        },{
-            "cmdType": "Sleep",
-            "cmdParam": 5
-        }, {
-            "cmdType": "Click",
-            "description": "地图选择 赛尔号",
-            "cmdParam": {
-                "x": 230    ,
-                "y": 1380,
+                "x": 100,
+                "y": 100,
                 "clicks": 2
             }
-        },   {
-            "cmdType": "Sleep",
-            "cmdParam": 12
         },
         {
-            "cmdType": "Click",
-            "description": "赛尔号内点击 探险",
-            "cmdParam": {
-                "x": 2345,
-                "y": 825,
-                "clicks": 1
-            }
-        },{
             "cmdType": "Sleep",
-            "cmdParam": 8
+            "cmdParam": 2
         },
         {
-            "cmdType": "Click",
-            "description": "选择 可洛星地图",
+            "cmdType": "Press",
             "cmdParam": {
-                "x": 1040,
-                "y": 590,
-                "clicks": 1
+                "keys": "enter",
+                "presses": 1
             }
-        },{
-            "cmdType": "Sleep",
-            "cmdParam": 2
-        },{
-            "cmdType": "Click",
-            "description": "点击出发",
+        },
+        {
+            "cmdType": "MoveTo",
             "cmdParam": {
-                "x": 2300,
-                "y": 1300,
-                "clicks": 1
+                "x": 100,
+                "y": 100
             }
+        },
+        {
+            "cmdType": "DragTo",
+            "cmdParam": {
+                "x": 100,
+                "y": 100
+            }
+        },
+        {
+            "cmdType": "Write",
+            "cmdParam": {
+                "message": "button.jpg"
+            }
+        },
+        {
+            "cmdType": "Scroll",
+            "cmdParam": 10
+        },
+        {
+            "cmdType": "KeyDown",
+            "cmdParam": "enter"
+        },
+        {
+            "cmdType": "KeyUp",
+            "cmdParam": "enter"
+        },
+        {
+            "cmdType": "ChineseWrite",
+            "cmdParam": "你好"
         },{
-            "cmdType": "Sleep",
-            "cmdParam": 2
+             "cmdType": "WebRPA",
+            "cmdParam": ""
         }
     ]
 }
